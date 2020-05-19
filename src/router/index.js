@@ -9,6 +9,8 @@ import PowerOnAnimation from '@/components/PowerOnAnimation'
 import Camera from '@/components/Camera'
 import Photos from '@/components/Photos'
 import Albums from '@/components/Albums'
+import Calculator from '@/components/Calculator'
+import Calendar from '@/components/Calendar'
 
 Vue.use(Router)
 
@@ -58,6 +60,16 @@ const router =  new Router({
           path: 'albums',
           name: 'Albums',
           component: Albums
+        },
+        {
+          path: 'calculator',
+          name: 'Calculator',
+          component: Calculator
+        },
+        {
+          path: 'calendar',
+          name: 'Calendar',
+          component: Calendar
         },
         {
           path: '/*',

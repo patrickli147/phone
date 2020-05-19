@@ -11,7 +11,7 @@
                     {{month}}月{{day}}日 星期{{weekday}}
                 </div>
                 <div class="luliar">
-                    某某年某月某某
+                    {{lunarMsg}}
                 </div>
             </div>
 
@@ -92,6 +92,10 @@ export default {
           pincodeInput: '',
           //true when pincode is wrong
           isPincodeWrong: false,
+          //请求url
+          url: 'http://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d',
+          //农历msg
+          lunarMsg: ''
       }
   },
   beforeDestroy() {
@@ -106,6 +110,13 @@ export default {
     this.setLocked(true);
     
     this.updateTimeInterval = this.updateTime();
+
+    try {
+        //请求农历数据
+        this.getLunarData();
+    } catch(e) {
+        console.log(e);
+    }
   },
   methods: {
     ...mapMutations({
@@ -170,6 +181,22 @@ export default {
     //handleCancelUnlock
     handleCancelUnlock() {
         this.setIsUnlockRequested(false);
+    },
+    //请求农历数据
+    async getLunarData() {
+        let res = await this.axios.get(this.url);
+        
+        if (res.data) {
+            //处理接口返回的错误
+            if (res.data.ErrorReason !== "no") {
+                console.log(res.data.ErrorReason);
+                this.lunarData = null;
+            }
+            else {
+                let resMsg = res.data.Result.nongli;
+                this.lunarMsg = resMsg.substring(0, resMsg.indexOf('('));
+            }
+        }
     }
   },
   computed: {

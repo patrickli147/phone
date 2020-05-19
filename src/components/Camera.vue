@@ -35,6 +35,7 @@ export default {
       } catch(e) {
           alert("打开摄像头失败!");
           console.log(e);
+          this.$router.push('phone/desktop');
       }
   },
   data() {
