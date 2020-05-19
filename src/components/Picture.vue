@@ -316,13 +316,6 @@ export default {
         },
         //handleLikeClicked: user like or unlike
         handleLikeClicked() {
-            if (this.givenData.name === '相机胶卷') {
-                //处理pictures
-                let pictures1 = this.pictures;
-                pictures1[this.index].isLiked = !pictures1[this.index].isLiked;
-                this.updatePictures(pictures1);
-            }
-            
             //处理data from parent
             this.dataFromParent.urls[this.index].isLiked = !this.dataFromParent.urls[this.index].isLiked;
         },
@@ -418,8 +411,9 @@ export default {
                     urls: this.pictures
                 };
                 this.dataFromParent = Object.assign({}, tempObj);
+                console.log(this.dataFromParent);
             }
-            //console.log(this.givenData);
+            
             else {
                 this.dataFromParent = Object.assign({}, this.givenData);
             }

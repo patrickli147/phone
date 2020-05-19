@@ -469,6 +469,7 @@ export default {
                 flex-wrap: wrap;
                 .album-item {
                     width: 33%;
+                    height: 50%;
                     
                     img {
                         width: 100px;

@@ -41,7 +41,8 @@
 import Topbar from '@/components/Topbar';
 import cameraIcon from '@/assets/animated_icons_camera.svg';
 import photoIcon from '@/assets/photos.png';
-
+import calculatorIcon from '@/assets/animated_icons_calculator.svg';
+import calendarIcon from '@/assets/animated_icons_calendar.svg'
 
 export default {
   name: 'Desktop',
@@ -59,6 +60,16 @@ export default {
             name: '照片',
             path: '/phone/albums',
             icon: photoIcon
+          },
+          {
+            name: '日历',
+            path: '/phone/calendar',
+            icon: calendarIcon
+          },
+          {
+            name: '计算器',
+            path: '/phone/calculator',
+            icon: calculatorIcon
           }
         ],
       ],
