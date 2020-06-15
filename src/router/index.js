@@ -11,6 +11,7 @@ import Photos from '@/components/Photos'
 import Albums from '@/components/Albums'
 import Calculator from '@/components/Calculator'
 import Calendar from '@/components/Calendar'
+import Poem from '@/components/Poem'
 
 Vue.use(Router)
 
@@ -70,6 +71,11 @@ const router =  new Router({
           path: 'calendar',
           name: 'Calendar',
           component: Calendar
+        },
+        {
+          path: 'poem',
+          name: 'Poem',
+          component: Poem
         },
         {
           path: '/*',

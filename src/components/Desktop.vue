@@ -72,6 +72,13 @@ export default {
             icon: calculatorIcon
           }
         ],
+        [
+          {
+            name: '计算器',
+            path: '/phone/calculator',
+            icon: calculatorIcon
+          }
+        ]
       ],
       //bottom apps
       bottomApps:[

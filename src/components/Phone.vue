@@ -109,6 +109,11 @@ export default {
       },
       //handleHomeClicked
       handleHomeClicked() {
+          //已关机
+          if(this.isPoweredOff) {
+              return;
+          }
+
           if (this.isLocked) {
               if (this.isBlackScreen) {
                   this.setIsBlackScreen(false);

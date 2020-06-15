@@ -470,10 +470,7 @@ export default {
                 .album-item {
                     width: 33%;
                     height: 50%;
-<<<<<<< HEAD
-=======
                     
->>>>>>> 1.1
                     img {
                         width: 100px;
                         height: 100px;

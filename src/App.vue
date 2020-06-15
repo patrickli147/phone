@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <HelloWorld/>
     <hello-world ></hello-world>
   </div>
 </template>
@@ -41,7 +40,7 @@ export default {
       try {
         //读取pictures
         let picturesFromLocalStorage = JSON.parse(window.localStorage.getItem("pictures"));
-        console.log(picturesFromLocalStorage);
+        
         if (!Array.isArray(picturesFromLocalStorage)) {
           picturesFromLocalStorage = [];
         }

@@ -5,9 +5,14 @@
 </template>
 
 <script>
+import Unsplash, { toJson } from "unsplash-js";
+
+
 export default {
     mounted() {
-        this.getData();
+        //this.getData();
+        //this.unsplash();
+        
     },
     data() {
         return {
@@ -23,7 +28,7 @@ export default {
             //url 
             url: "https://tianqiapi.com/api",
             //another
-            path: "http://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d",
+            path: "https://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d",
             //unsplash api
             uapi: 'https://unsplash.it/1600/900?random',
             //unsplash img
@@ -44,6 +49,17 @@ export default {
             //     c 
             // })
 
+                        
+
+            /*
+            this.axios.get('https://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d', {
+                date: '20200202'
+            }).then((res)=> {
+                console.log(res);
+            })
+            */
+
+           
         },
         //comment
         comment() {
@@ -65,6 +81,24 @@ export default {
              */
 
 
+        },
+        //unsplash
+        unsplash() {
+            const unsplash = new Unsplash({
+                accessKey: "GT_Bfahw73NpMk9NHvcCMqBIyZIpxdhY4qMbCV3TgPM",
+                // Optionally you can also configure a custom header to be sent with every request
+                headers: {
+                    "X-Custom-Header": "foo"
+                },
+                timeout: 500 // values set in ms
+            });
+
+            unsplash.search.photos("dogs", 1, 10, { orientation: "portrait" })
+                .then(toJson)
+                .then(res => {
+                    console.log(res);
+                    localStorage.setItem("tempData", JSON.stringify(res));
+            });
         }
     }
 }

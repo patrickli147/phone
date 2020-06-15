@@ -83,7 +83,7 @@ export default {
               '日'
           ],
           //toast message for user
-          toastmgs: '请输入密码(123456)',
+          toastmgs: '请输入密码(000000)',
           //dots of pincode
           dots: [1, 2, 3, 4, 5, 6],
           //pincode buttons
@@ -93,7 +93,7 @@ export default {
           //true when pincode is wrong
           isPincodeWrong: false,
           //请求url
-          url: 'http://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d',
+          url: 'https://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d',
           //农历msg
           lunarMsg: ''
       }
@@ -143,7 +143,7 @@ export default {
     //check pincode
     checkPincode() {
         
-        if (this.pincodeInput === '123456') {
+        if (this.pincodeInput === '000000') {
             //unlock when pincode is correct
             this.setLocked(false);
 

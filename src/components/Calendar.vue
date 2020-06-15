@@ -41,8 +41,15 @@
                         <div class="offsets" v-for="count in offsetsOfWeekday[0]" :key="count.id">
                             <!-- 用于填充 -->
                         </div>
-                        <div class="weekday-content" v-for="day in daysOfEachMonth[lastMonth]" :key="day.id">
-                            {{day}}
+                        <div class="weekday-content" v-for="day in daysOfEachMonth[lastMonth]" :key="day.id"
+                            @mouseenter="showDateDesc($event, offsetsOfWeekday[0], lastMonth, day)"
+                            @mouseleave="hideDateDesc"
+                        >
+                            <span>{{day}}</span>
+                            <div class="date-desc" v-show="lastMonth === hoverMonth && day === hoverDay">
+                                <div>Mock数据</div>
+                                <div>{{getMockData()}}</div>
+                            </div>
                         </div>
                     </div>
                     <!-- 前一个月 结束 -->
@@ -55,8 +62,17 @@
                         <div class="offsets" v-for="count in offsetsOfWeekday[1]" :key="count.id">
                             <!-- 用于填充 -->
                         </div>
-                        <div :class="isToday(currentMonth, day) ? 'weekday-content today' : 'weekday-content'" v-for="day in daysOfEachMonth[currentMonth]" :key="day.id">
-                            {{day}}
+                        <div :class="isToday(currentMonth, day) ? 'weekday-content today' : 'weekday-content'"
+                            v-for="day in daysOfEachMonth[currentMonth]" 
+                            :key="day.id"
+                            @mouseenter="showDateDesc($event, offsetsOfWeekday[1], currentMonth, day)"
+                            @mouseleave="hideDateDesc"
+                        >
+                            <span>{{day}}</span>
+                            <div class="date-desc" v-show="currentMonth === hoverMonth && day === hoverDay">
+                                <div>Mock数据</div>
+                                <div>{{getMockData()}}</div>
+                            </div>
                         </div>
                     </div>
                     <!-- 中间月份 结束 -->
@@ -69,8 +85,15 @@
                         <div class="offsets" v-for="count in offsetsOfWeekday[2]" :key="count.id">
                             <!-- 用于填充 -->
                         </div>
-                        <div class="weekday-content" v-for="day in daysOfEachMonth[nextMonth]" :key="day.id">
-                            {{day}}
+                        <div class="weekday-content" v-for="day in daysOfEachMonth[nextMonth]" :key="day.id"
+                            @mouseenter="showDateDesc($event, offsetsOfWeekday[2], nextMonth, day)"
+                            @mouseleave="hideDateDesc"
+                        >
+                            <span>{{day}}</span>
+                            <div class="date-desc" v-show="nextMonth === hoverMonth && day === hoverDay">
+                                <div>Mock数据</div>
+                                <div>{{getMockData()}}</div>
+                            </div>
                         </div>
                     </div>
                     <!-- 后一个月 结束 -->
@@ -84,11 +107,11 @@
             </div>
             <!-- 月份详细 结束 -->
 
-            <!-- 年度 开始 -->
-            <div class="calendar-year" v-if="false">
-
+            <!-- 具体 开始 -->
+            <div class="date-infomation" v-if="false">
+                
             </div>
-            <!-- 年度 结束 -->
+            <!-- 具体 结束 -->
         </div>
         <!-- calendarwrap end -->
 
@@ -97,6 +120,7 @@
 
 <script>
 import Topbar from '@/components/Topbar';
+import Mock from 'mockjs';
 
 export default {
     mounted() {
@@ -113,6 +137,10 @@ export default {
             years:[],
             //是否展示年份选择
             isYearSelectShown: false,
+            //hover的month
+            hoverMonth: -1,
+            //hover的day
+            hoverDay: -1,
         }
     },
     methods:{
@@ -226,7 +254,7 @@ export default {
          */
         updateYears(e) {
             let target = e.target;
-            if (target.scrollTop >= (100 * (this.years.length / 10))) {
+            if (target.scrollTop >= (10 * (this.years.length / 10))) {
                 //years 最后一个元素
                 let last = this.years[this.years.length - 1];
                 for (let i = 1; i <= 10; i ++) {
@@ -262,11 +290,58 @@ export default {
             this.currentDate.setFullYear(year);
             this.currentDate = new Date(this.currentDate);
 
+            //如果选择2089年及以上（最高上限）,years特殊处理
+            if (year >= 2089) {
+                this.years = [2089, 2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099];
+                return;
+            }
+
             //重新设置years
             this.years = [];
             for (let i = 0; i < 10; i ++) {
                 this.years.push(this.currentYear + i);
             }
+        },
+        /**
+         * @func
+         * @desc 显示日期详情
+         * @param {Event} e - mouseenter事件
+         * @param {number} offset - 本月1日星期几
+         * @param {number} month - 当前的月份
+         * @param {number} day - 当前的日期
+         */
+        showDateDesc(e, offset, month, day) {
+            //计算当前是星期几 0 1 2 3 4 5 6 对应 周日 一 二 三 四 五 六
+            let weekday = (offset + day - 1) % 7;         
+            
+            //按需设置类名（在左边展示还是在右边展示）
+            if (weekday < 3) {
+                //在右边展示
+                e.target.lastChild.className = "date-desc right";
+            }
+            else {
+                //在左边展示
+                e.target.lastChild.className = "date-desc left";
+            }
+
+            //设置hover的month和day
+            this.hoverMonth = month;
+            this.hoverDay = day;
+        },
+        /**
+         * @func
+         * @desc 重置hoverMonth和hoverDay以隐藏日期详情
+         */
+        hideDateDesc() {
+            this.hoverMonth = -1;
+            this.hoverDay = -1;
+        },
+        /**
+         * @func
+         * @desc Mock数据
+         */
+        getMockData() {
+            return Mock.Random.ctitle(4);
         }
         
     },
@@ -497,12 +572,35 @@ export default {
                         //border-radius: 5px;
                         border-bottom: 1px solid red;
                         transition: all 0.2s;
+                        position: relative;
+
+                        .date-desc {
+                            position: absolute;
+                            top: 0;
+                            background-color: #eee;
+                            width: 150%;
+                            color: black;
+                            z-index: 5;
+                            border-radius: 5px;
+                            font-size: 15px;
+                        }
+                        .date-desc:hover {
+                            background-color: rgb(248, 7, 47);
+                            color: #fff;
+                        }
+                        .right {
+                            left: 50px;
+                        }
+                        .left {
+                            right: 50px;
+                        }
                     }
                     .weekday-content:hover {
                         background-color: rgb(18, 149, 219);
                         border-radius: 5px;
                         transform: scale(1.2);
                         color: #fff;
+                        z-index: 5;
                     }
                     .weekend {
                         opacity: 0.25;
