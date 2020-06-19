@@ -107,5 +107,14 @@ export default {
 <style lang="scss" scoped>
 div {
     color: rgb(18,150,219);
+
+    /*隐藏滚动条，当IE下溢出，仍然可以滚动*/
+    -ms-overflow-style:none;
+    /*火狐下隐藏滚动条*/
+    scrollbar-width: none;
+    //chrome
+    .to-hide::-webkit-scrollbar {
+        display: none;
+    }
 }
 </style>

@@ -234,6 +234,10 @@ export default {
         background-color: #fff;
         overflow: scroll;
         position: relative;
+        /*隐藏滚动条，当IE下溢出，仍然可以滚动*/
+        -ms-overflow-style:none;
+        /*火狐下隐藏滚动条*/
+        scrollbar-width: none;
 
         .photo-item-wrap {
             display: flex;

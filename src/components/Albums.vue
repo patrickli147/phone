@@ -501,6 +501,7 @@ export default {
     .album-vertical {
         width: 100%;
         height: 100%;
+        
         .top-info {
             width: 100%;
             height: 10%;
@@ -542,6 +543,11 @@ export default {
             height: 85%;
             padding: 10px;
             border-bottom: 1px solid #eee;
+            /*隐藏滚动条，当IE下溢出，仍然可以滚动*/
+            -ms-overflow-style:none;
+            /*火狐下隐藏滚动条*/
+            scrollbar-width: none;
+
 
             display: flex;
             justify-content: flex-start;
