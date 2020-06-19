@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import Mock from 'mockjs'
 import ControlUnit from './ControlUnit'
 import {mapGetters,mapMutations} from 'vuex'
 
@@ -48,12 +47,9 @@ export default {
   },
   created() {
       this.date = new Date();
-      console.log("created");
   },
   mounted() {
-    let x = Mock.Random.ctitle();
-    console.log(x);
-    
+    //更新时间
     this.updateTimeInterval = this.updateTime();
   },
   components: {
@@ -114,6 +110,7 @@ export default {
               return;
           }
 
+          //已锁屏
           if (this.isLocked) {
               if (this.isBlackScreen) {
                   this.setIsBlackScreen(false);

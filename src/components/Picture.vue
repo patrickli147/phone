@@ -411,7 +411,7 @@ export default {
                     urls: this.pictures
                 };
                 this.dataFromParent = Object.assign({}, tempObj);
-                console.log(this.dataFromParent);
+                //console.log(this.dataFromParent);
             }
             
             else {

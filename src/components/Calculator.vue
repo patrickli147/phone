@@ -160,7 +160,7 @@ export default {
                         this.output = this.output.substring(0, this.output.length - 1);
                     }
                     else if(this.output.length === 1) {
-                        this.output = '';
+                        this.output = '0';
                     }
                     else {
                         return;

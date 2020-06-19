@@ -70,6 +70,11 @@ export default {
             name: '计算器',
             path: '/phone/calculator',
             icon: calculatorIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: calculatorIcon
           }
         ],
         [
@@ -133,7 +138,7 @@ export default {
       .apps-page {
         position: absolute;
         width: 100%;
-        height: 100%;
+        //height: 100%;
 
         display: flex;
         justify-content: flex-start;
@@ -141,6 +146,8 @@ export default {
         flex-wrap: wrap;
         .app-item {
           width: 25%;
+          //height: 16.67%;
+
           img {
             width: 42px;
             height: 42px;
