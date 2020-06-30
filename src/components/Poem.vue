@@ -56,7 +56,7 @@
             <div class="game-container">
                 <div class="poem-sentence"
                     v-for="(sentence, index) in content"
-                    :key="sentence.id"
+                    :key="index"
                 >
                     <div 
                         v-for="count in (sentence.length - 1)"
@@ -69,7 +69,7 @@
                     <div class="punctuation">
                         <span>{{sentence[sentence.length - 1]}}</span>
                     </div>
-                </div>
+                </div>                
             </div>
             <!-- 游戏区域 结束 -->
 
@@ -463,6 +463,38 @@ export default {
 
             //切换界面
             this.isAnsShown = false;
+        },
+
+        //tansition-group 钩子
+        async beforeEnter(el) {
+            console.log("before enter");
+            el.style.position = 'absolute';
+            el.style.top = '-100px';
+            el.style.left = '0';
+
+            let tempTop;
+            for (let i = 0; i < 10; i ++) {
+                tempTop =  Number.parseInt(el.style.top);
+                tempTop += 10;
+                el.style.top = tempTop + "px";
+                console.log("hass")
+
+                //延时
+                await new Promise(resolve => {
+                    setTimeout(resolve, 50);
+                })
+                console.log("psss");
+            }
+
+        },
+        enter: function (el, done) {
+            console.log("enter");
+
+            done();
+        },
+        leave: function (el, done) {
+            console.log("leave");
+            done();   
         }
     },
     computed: {
@@ -756,6 +788,7 @@ export default {
             padding: 5%;
             width: 100%;
             height: 100%;
+            z-index: 5;
 
             .ans-detail {            
                 display: flex;
@@ -789,10 +822,6 @@ export default {
                     background-color: rgba(255, 255, 255, 0.445);
 
                     padding: 5px;
-
-                    .content-item {
-
-                    }
                 }
                 .ans-content::-webkit-scrollbar {
                     display: none;
