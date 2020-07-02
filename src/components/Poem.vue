@@ -1,21 +1,27 @@
 <template>
    <div class="poem">
         <!-- 首页 开始 -->
-        <div class="start-page" v-if="false">
+        <div class="start-page" v-if="isStartPageShown">
             <div class="title">
-                <span>寸心</span>
+                <h1>寸心</h1>
             </div>
-            <div class="start-button">
-                <span>开始游戏</span>
+            <div 
+                class="start-button"
+                @click="isStartPageShown = !isStartPageShown"    
+            >
+                <button>开始游戏</button>
             </div>
         </div>
         <!-- 首页 结束 -->
 
         <!-- 宫格诗词 开始 -->
-        <div class="grid-poem">
+        <div class="grid-poem" v-if="!isStartPageShown">
             <!-- 控制单元 开始 -->
             <div class="control-unit">
-                <div class="control-item">
+                <div 
+                    class="control-item"
+                    @click="isStartPageShown = !isStartPageShown"
+                >
                     返回
                 </div>
                 <div 
@@ -56,7 +62,7 @@
             <div class="game-container">
                 <div class="poem-sentence"
                     v-for="(sentence, index) in content"
-                    :key="sentence.id"
+                    :key="index"
                 >
                     <div 
                         v-for="count in (sentence.length - 1)"
@@ -69,7 +75,7 @@
                     <div class="punctuation">
                         <span>{{sentence[sentence.length - 1]}}</span>
                     </div>
-                </div>
+                </div>                
             </div>
             <!-- 游戏区域 结束 -->
 
@@ -116,7 +122,10 @@
                     </div>
 
                     <div class="ans-control">
-                        <div class="control-item">
+                        <div 
+                            class="control-item"
+                            @click="isStartPageShown = !isStartPageShown"    
+                        >
                             返回
                         </div>
                         <div 
@@ -183,6 +192,8 @@ export default {
             isAnsShown: false,
             //true: 展示规则
             isRulesShown: false,
+            //true：展示首页
+            isStartPageShown: true
         }
     },
     methods: {
@@ -414,7 +425,8 @@ export default {
             }
 
             //全部正确，游戏结束
-            console.log("都对了");
+            //显示答案
+            this.isAnsShown = true;
         },
         /**
          * @func
@@ -463,6 +475,38 @@ export default {
 
             //切换界面
             this.isAnsShown = false;
+        },
+
+        //tansition-group 钩子
+        async beforeEnter(el) {
+            console.log("before enter");
+            el.style.position = 'absolute';
+            el.style.top = '-100px';
+            el.style.left = '0';
+
+            let tempTop;
+            for (let i = 0; i < 10; i ++) {
+                tempTop =  Number.parseInt(el.style.top);
+                tempTop += 10;
+                el.style.top = tempTop + "px";
+                console.log("hass")
+
+                //延时
+                await new Promise(resolve => {
+                    setTimeout(resolve, 50);
+                })
+                console.log("psss");
+            }
+
+        },
+        enter: function (el, done) {
+            console.log("enter");
+
+            done();
+        },
+        leave: function (el, done) {
+            console.log("leave");
+            done();   
         }
     },
     computed: {
@@ -602,12 +646,53 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    
+    //总体背景颜色
+    $bg-color: rgb(207, 209, 159);
+
+    .start-page {
+        width: 100%;
+        height: 100%;
+        background-color: $bg-color;
+        color: #000;
+        padding: 3%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .title {
+            width: 100%;
+            margin-bottom: 20px;
+            font-size: 30px;
+            position: relative;
+
+            h1 {
+                animation: leftjump 1s;
+            }
+        }
+
+        .start-button {
+            width: 100%;
+            button {
+                font-size: 20px;
+                padding: 5px;
+                background-color: rgb(5, 134, 255);
+                border-radius: 15px;
+                opacity: 0.8;
+                transition: all 0.3s;
+                animation: fadein 1s;
+            }
+            button:hover {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+    }
+
     //宫格寻诗
     .grid-poem {
-        //总体背景颜色
-        $bg-color: rgb(207, 209, 159);
-
         width: 100%;
         height: 100%;
         background-color: $bg-color;
@@ -657,6 +742,7 @@ export default {
         .game-container {
             width: 100%;
             //height: 80%;
+            animation: leftfadein 1s;
 
             display: flex;
             justify-content: center;
@@ -756,6 +842,7 @@ export default {
             padding: 5%;
             width: 100%;
             height: 100%;
+            z-index: 5;
 
             .ans-detail {            
                 display: flex;
@@ -789,10 +876,6 @@ export default {
                     background-color: rgba(255, 255, 255, 0.445);
 
                     padding: 5px;
-
-                    .content-item {
-
-                    }
                 }
                 .ans-content::-webkit-scrollbar {
                     display: none;
@@ -832,7 +915,57 @@ export default {
     }
 }
 
+//动画
+@keyframes leftjump {
+    0% {
+        opacity: 0;
+        transform: translate3d(0, -500px, 0);
+    }
+    30% {
+        transform: translate3d(25px, 0, 0);
+    }
+    45% {
+        transform: translate3d(-10px, 0, 0);
+    }
+    60% {
+        transform: translate3d(5px, 0, 0);
+    }
+    70% {
+        transform: translate3d(0, 10px, 0);
+    }
+    80% {
+        transform: translate3d(0, -10px, 0);
+    }
+    90% {
+        opacity: 1;
+        transform: translate3d(0, 5px, 0);
+    }
+    100% {
+        transform: none;
+    }
+}
 
+@keyframes fadein {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: .8;
+    }
+}
+
+@keyframes leftfadein {
+    0% {
+        opacity: 0;
+        transform: translate3d(-500px, 0, 0);
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: none;
+    }
+}
 
 
 </style>

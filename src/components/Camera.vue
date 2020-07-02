@@ -1,5 +1,5 @@
 <template>
-    <div class="camera" v-show="isVideoLoaded">
+    <div class="camera" >
         <div class="top-container">
             <video id="video" v-show="isVideoPlaying"></video>
             <canvas id="canvas"></canvas>
@@ -33,10 +33,22 @@ export default {
       try {
           this.getUserMedia();
       } catch(e) {
-          alert("打开摄像头失败!");
+          alert("摄像头打开失败!");
           console.log(e);
           this.$router.push('phone/desktop');
       }
+  },
+  beforeDestroy() {
+      try {
+        //关闭摄像头
+        if (this.mediaStreamTrack) {
+            this.mediaStreamTrack.stop();
+        }
+      } catch(e) {
+          console.log("摄像头关闭失败");
+          console.log(e);
+      }
+      
   },
   data() {
       return {
@@ -52,14 +64,23 @@ export default {
           //isVideoLoaded
           isVideoLoaded: false,
           //is picture previewed
-          isPreviewed: false
+          isPreviewed: false,
+          //track to control camera
+          mediaStreamTrack: null,
       }
   },
   methods: {
     //get user media
     getUserMedia() {
         navigator.mediaDevices.getUserMedia(this.constraints).then((stream) => {
-            console.log(stream);
+            this.mediaStreamTrack =
+              typeof stream.stop === "function"
+                ? stream
+                : stream.getTracks()[0];
+            
+            //console.log(stream.getTracks());
+            //console.log(stream);
+
             let video = document.getElementById("video");
             video.srcObject = stream;
             video.onloadedmetadata = () => {
@@ -69,6 +90,11 @@ export default {
             }
         }).catch((err) => {
             console.log(err);
+            //console.log("需要您同意使用摄像头");
+            alert("您已禁止该页面使用摄像头。请手动设置为允许。");
+
+            //退回桌面
+            this.$router.push('phone/desktop');
         });
     },
     //handleTakePicture

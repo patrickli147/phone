@@ -8,6 +8,8 @@ import store from './store/index'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 
+axios.defaults.baseURL = '/api'
+
 Vue.use(VueAxios, axios)
 
 import forbid from './utils/forbid'
