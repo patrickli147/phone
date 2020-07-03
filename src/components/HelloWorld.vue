@@ -12,6 +12,7 @@ export default {
     mounted() {
         //this.getData();
         //this.unsplash();
+<<<<<<< Updated upstream
 
         //跨域
         this.axios.get('/').then((res) => {
@@ -19,6 +20,8 @@ export default {
         }).catch((e) => {
             console.log(e);
         })
+=======
+>>>>>>> Stashed changes
         
     },
     data() {
