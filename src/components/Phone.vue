@@ -110,10 +110,7 @@ export default {
               return;
           }
 
-<<<<<<< Updated upstream
           //已锁屏
-=======
->>>>>>> Stashed changes
           if (this.isLocked) {
               if (this.isBlackScreen) {
                   this.setIsBlackScreen(false);

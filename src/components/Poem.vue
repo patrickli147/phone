@@ -1,7 +1,6 @@
 <template>
    <div class="poem">
         <!-- 首页 开始 -->
-<<<<<<< Updated upstream
         <div class="start-page" v-if="isStartPageShown">
             <div class="title">
                 <h1>寸心</h1>
@@ -11,20 +10,11 @@
                 @click="isStartPageShown = !isStartPageShown"    
             >
                 <button>开始游戏</button>
-=======
-        <div class="start-page" v-if="false">
-            <div class="title">
-                <span>寸心</span>
-            </div>
-            <div class="start-button">
-                <span>开始游戏</span>
->>>>>>> Stashed changes
             </div>
         </div>
         <!-- 首页 结束 -->
 
         <!-- 宫格诗词 开始 -->
-<<<<<<< Updated upstream
         <div class="grid-poem" v-if="!isStartPageShown">
             <!-- 控制单元 开始 -->
             <div class="control-unit">
@@ -65,31 +55,10 @@
                 </transition>
                 <!-- 显示相关信息 结束 -->
 
-=======
-        <div class="grid-poem">
-            <!-- 控制单元 开始 -->
-            <div class="control-unit">
-                <div class="back">
-                    返回
-                </div>
-                <div class="restart">
-                    重玩
-                </div>
-                <div class="tips-title">
-                    标题
-                </div>
-                <div class="tips-translation">
-                    译文
-                </div>
-                <div class="answer">
-                    答案
-                </div>
->>>>>>> Stashed changes
             </div>
             <!-- 控制单元 结束 -->
 
             <!-- 游戏区域 开始 -->
-<<<<<<< Updated upstream
             <div class="game-container" ref="gameContainer">
                 <div class="poem-sentence"
                     v-for="(sentence, index) in content"
@@ -102,23 +71,10 @@
                         :class="dynamicClassNames[getCurrentIndex(index, count)]"
                     >
                         <span>{{contentForUser[getCurrentIndex(index, count)]}}</span>
-=======
-            <div class="game-container">
-                <div class="poem-sentence"
-                    v-for="(sentence, index) in content"
-                    :key="sentence.id"
-                >
-                    <div :class="isCurrentCorrect(index, count) ? 'poem-word correct' : 'poem-word incorrect'"
-                        v-for="count in (sentence.length - 1)"
-                        :key="count.id"
-                    >
-                        <span>{{randomContentArray[getCurrentIndex(index, count)]}}</span>
->>>>>>> Stashed changes
                     </div>
                     <div class="punctuation">
                         <span>{{sentence[sentence.length - 1]}}</span>
                     </div>
-<<<<<<< Updated upstream
                 </div>                
             </div>
             <!-- 游戏区域 结束 -->
@@ -190,11 +146,6 @@
             
             <!-- 答案 结束 -->
 
-=======
-                </div>
-            </div>
-            <!-- 游戏区域 结束 -->
->>>>>>> Stashed changes
         </div>
         <!-- 宫格诗词 结束 -->
    </div>
@@ -213,7 +164,6 @@ export default {
             poemData: {},
             //中文标点
             punctuations: ['，','。', '、', '？', '！'],
-<<<<<<< Updated upstream
             //true:已经显示提示信息
             isTipsMsgShown: false,
             //true:只点击了一个字
@@ -244,9 +194,6 @@ export default {
             isRulesShown: false,
             //true：展示首页
             isStartPageShown: true
-=======
-
->>>>>>> Stashed changes
         }
     },
     methods: {
@@ -263,15 +210,8 @@ export default {
                 else {
                     //请求成功
                     this.poemData = res.data;
-<<<<<<< Updated upstream
 
                     this.init();
-=======
-                    console.log(this.poemData.origin.content);
-                    console.log(this.contentArray);
-                    console.log(this.randomContentArray);
-                    console.log(this.content);
->>>>>>> Stashed changes
                 }
             }, (err) => {
                 console.log(err);
@@ -301,7 +241,6 @@ export default {
          * @returns {boolean} 正确时返回值为true
          */
         isCurrentCorrect(row, column) {
-<<<<<<< Updated upstream
             let currentIndex;
             if (column) {
                 //传入两个参数
@@ -544,12 +483,6 @@ export default {
             //切换界面
             this.isAnsShown = false;
         },
-=======
-            let currentIndex = this.getCurrentIndex(row, column);
-
-            return this.randomContentArray[currentIndex] === this.contentArray[currentIndex];
-        }
->>>>>>> Stashed changes
     },
     computed: {
         //诗的具体内容
@@ -580,15 +513,9 @@ export default {
                     }
                 }
 
-<<<<<<< Updated upstream
                 if (contentInUse.length > this.level) {
                     //最多8组
                     contentInUse.splice(this.level);
-=======
-                if (contentInUse.length > 8) {
-                    //最多8组
-                    contentInUse.splice(8);
->>>>>>> Stashed changes
                 }
                 return contentInUse;
             }
@@ -617,7 +544,6 @@ export default {
             }
         },
         //随机打乱contentArray
-<<<<<<< Updated upstream
         randomContentArray: {
             get() {
                 if (this.contentArray.length === 0) {
@@ -684,55 +610,6 @@ export default {
         //返回数据origin
         origin() {
             return this.poemData?.origin;
-=======
-        randomContentArray() {
-            if (this.contentArray.length === 0) {
-                return [];
-            }
-            else {
-                //打乱后的数组
-                let randomContentArr = [...this.contentArray];
-
-                //至少保证40%的字在正确的位置
-                let correctNum = Math.floor(this.contentArray.length * 0.4);
-
-                //随机选取正确的index
-                let correctIndexes = [];
-                for (let i = 0; i < correctNum; ) {
-                    let tempIndex = Math.floor(Math.random() * this.contentArray.length);
-                    if (correctIndexes.indexOf(tempIndex) < 0) {
-                        //没有重复
-                        correctIndexes.push(tempIndex);
-                        randomContentArr[tempIndex] = this.contentArray[tempIndex];                      
-                        i ++;
-                    }
-                }
-
-                //错误的位置
-                let incorrectIndexes = [];
-                for (let i = 0; i < this.contentArray.length; i ++) {
-                    if (correctIndexes.indexOf(i) < 0) {
-                        incorrectIndexes.push(i);
-                    }
-                }
-
-                //打乱错误的位置
-                let randomIncorrectIndexes = [...incorrectIndexes];
-                for (let i = 0; i < randomIncorrectIndexes.length; i ++) {
-                    let tempIndex = Math.floor(Math.random() * randomIncorrectIndexes.length)
-                    let tempValue = randomIncorrectIndexes[tempIndex];
-                    randomIncorrectIndexes[tempIndex] = randomIncorrectIndexes[i];
-                    randomIncorrectIndexes[i] = tempValue;
-                }
-                
-                //赋值给randomContentArr
-                for (let i = 0; i < randomIncorrectIndexes.length; i ++) {
-                    randomContentArr[randomIncorrectIndexes[i]] = this.contentArray[incorrectIndexes[i]];
-                }
-
-                return randomContentArr;
-            }
->>>>>>> Stashed changes
         }
     }
 }
@@ -743,7 +620,6 @@ export default {
     background-color: #000;
     width: 100%;
     height: 100%;
-<<<<<<< Updated upstream
     overflow: hidden;
     background-image: url('../assets/gamebg.jpg');
 
@@ -789,32 +665,22 @@ export default {
         }
     }
 
-=======
-    
->>>>>>> Stashed changes
     //宫格寻诗
     .grid-poem {
         width: 100%;
         height: 100%;
-<<<<<<< Updated upstream
         color: #000;
         padding: 3%;
         position: relative;
-=======
->>>>>>> Stashed changes
 
         .control-unit {
             width: 100%;
             height: 20%;
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: nowrap;
-<<<<<<< Updated upstream
             position: relative;
 
             .control-item {
@@ -843,27 +709,6 @@ export default {
             .fade-enter, .fade-leave-to {
                 bottom: 0px;
                 opacity: 0;
-=======
-
-            .back {
-                width: 20%;
-            }
-
-            .restart {
-                width: 20%;
-            }
-
-            .tips-title {
-                width: 20%;
-            }
-
-            .tips-translation {
-                width: 20%;
-            }
-
-            .answer {
-                width: 20%;
->>>>>>> Stashed changes
             }
         }
 
@@ -881,11 +726,7 @@ export default {
                 //height: 12.5%;
 
                 display: flex;
-<<<<<<< Updated upstream
                 justify-content: center;
-=======
-                justify-content: flex-start;
->>>>>>> Stashed changes
                 align-items: center;
 
                 .poem-word {
@@ -896,7 +737,6 @@ export default {
                     margin: 2px;
                     font-size: 20px;
 
-<<<<<<< Updated upstream
                     //配合动画的绝对定位
                     position: relative;
 
@@ -915,15 +755,6 @@ export default {
 
                 .selected {
                     border: 1px solid red;
-=======
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-
-                .punctuation {
-                    
->>>>>>> Stashed changes
                 }
 
                 .correct {
@@ -937,7 +768,6 @@ export default {
 
             
         }
-<<<<<<< Updated upstream
         .leftfadein {
             animation: leftfadein .5s;
         }
@@ -1102,12 +932,6 @@ export default {
         transform: none;
     }
 }
-=======
-    }
-}
-
-// test
->>>>>>> Stashed changes
 
 
 </style>
