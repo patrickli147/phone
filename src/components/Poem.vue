@@ -59,7 +59,7 @@
             <!-- 控制单元 结束 -->
 
             <!-- 游戏区域 开始 -->
-            <div class="game-container">
+            <div class="game-container" ref="gameContainer">
                 <div class="poem-sentence"
                     v-for="(sentence, index) in content"
                     :key="index"
@@ -464,6 +464,13 @@ export default {
 
             //设置界面
             this.isAnsShown = false;
+
+            //播放动画
+            this.$refs.gameContainer.className = 'game-container';
+            setTimeout(() => {
+                this.$refs.gameContainer.className = 'game-container leftfadein';
+            }, 1);
+            
         },
         /**
          * @func
@@ -476,38 +483,6 @@ export default {
             //切换界面
             this.isAnsShown = false;
         },
-
-        //tansition-group 钩子
-        async beforeEnter(el) {
-            console.log("before enter");
-            el.style.position = 'absolute';
-            el.style.top = '-100px';
-            el.style.left = '0';
-
-            let tempTop;
-            for (let i = 0; i < 10; i ++) {
-                tempTop =  Number.parseInt(el.style.top);
-                tempTop += 10;
-                el.style.top = tempTop + "px";
-                console.log("hass")
-
-                //延时
-                await new Promise(resolve => {
-                    setTimeout(resolve, 50);
-                })
-                console.log("psss");
-            }
-
-        },
-        enter: function (el, done) {
-            console.log("enter");
-
-            done();
-        },
-        leave: function (el, done) {
-            console.log("leave");
-            done();   
-        }
     },
     computed: {
         //诗的具体内容
@@ -646,13 +621,11 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    //总体背景颜色
-    $bg-color: rgb(207, 209, 159);
+    background-image: url('../assets/gamebg.jpg');
 
     .start-page {
         width: 100%;
         height: 100%;
-        background-color: $bg-color;
         color: #000;
         padding: 3%;
 
@@ -669,7 +642,7 @@ export default {
             position: relative;
 
             h1 {
-                animation: leftjump 1s;
+                animation: topjump 1s;
             }
         }
 
@@ -678,15 +651,16 @@ export default {
             button {
                 font-size: 20px;
                 padding: 5px;
-                background-color: rgb(5, 134, 255);
+                background: linear-gradient(135deg,#56c8ff,#6f99fc) no-repeat;
                 border-radius: 15px;
                 opacity: 0.8;
                 transition: all 0.3s;
-                animation: fadein 1s;
+                animation: leftfadein 1s;
+                transform: rotateZ(7deg);
             }
             button:hover {
                 opacity: 1;
-                transform: scale(1.2);
+                transform: scale(1.1);
             }
         }
     }
@@ -695,7 +669,6 @@ export default {
     .grid-poem {
         width: 100%;
         height: 100%;
-        background-color: $bg-color;
         color: #000;
         padding: 3%;
         position: relative;
@@ -742,7 +715,6 @@ export default {
         .game-container {
             width: 100%;
             //height: 80%;
-            animation: leftfadein 1s;
 
             display: flex;
             justify-content: center;
@@ -796,6 +768,9 @@ export default {
 
             
         }
+        .leftfadein {
+            animation: leftfadein .5s;
+        }
 
         .rules {
             position: absolute;
@@ -836,7 +811,7 @@ export default {
 
         .answer {
             position: absolute;
-            background-color: $bg-color;
+            background-image: url('../assets/gamebg.jpg');
             top: 0;
             left: 0;
             padding: 5%;
@@ -916,29 +891,20 @@ export default {
 }
 
 //动画
-@keyframes leftjump {
+@keyframes topjump {
     0% {
         opacity: 0;
         transform: translate3d(0, -500px, 0);
     }
-    30% {
-        transform: translate3d(25px, 0, 0);
-    }
-    45% {
-        transform: translate3d(-10px, 0, 0);
-    }
     60% {
-        transform: translate3d(5px, 0, 0);
+        transform: translate3d(-10px, 20px, 0);
     }
-    70% {
-        transform: translate3d(0, 10px, 0);
-    }
-    80% {
-        transform: translate3d(0, -10px, 0);
+    75% {
+        transform: translate3d(5px, -10px, 0);
     }
     90% {
-        opacity: 1;
         transform: translate3d(0, 5px, 0);
+        opacity: 1;
     }
     100% {
         transform: none;
