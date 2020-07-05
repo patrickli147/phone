@@ -59,7 +59,7 @@
             <!-- 控制单元 结束 -->
 
             <!-- 游戏区域 开始 -->
-            <div class="game-container" ref="gameContainer">
+            <div class="game-container leftfadein" ref="gameContainer">
                 <div class="poem-sentence"
                     v-for="(sentence, index) in content"
                     :key="index"

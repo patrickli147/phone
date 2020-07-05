@@ -133,8 +133,10 @@ import Modal from '@/components/Modal';
 
 export default {
     mounted() {
+
         this.getRandomData();
         this.mockAlbum.push({name:'empty',urls: []})
+
     },
     data() {
         return {
@@ -184,10 +186,10 @@ export default {
         //Mock data
         getRandomData() {
             //随机生成3~10个相册
-            let numOfAlbums = Mock.Random.natural(3, 20);
+            let numOfAlbums = Mock.Random.natural(3, 16);
             for (let i = 0; i < numOfAlbums; i ++) {
                 //随机的照片数目
-                let numOfPhotos = Mock.Random.natural(20, 80);
+                let numOfPhotos = Mock.Random.natural(20, 40);
                 let tempArr = [];
                 for (let j = 0; j < numOfPhotos; j ++) {
                     let tempPictureObj = {name: '', csrc: '', isLiked: false};
@@ -204,7 +206,7 @@ export default {
                 }
                 this.mockAlbum.push(dataObj);
             }
-            //console.log(this.mockAlbum);
+            //console.log("finished");
         },
         //handleMousedown
         handleMousedown(e) {

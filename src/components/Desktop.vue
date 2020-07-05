@@ -42,7 +42,8 @@ import Topbar from '@/components/Topbar';
 import cameraIcon from '@/assets/animated_icons_camera.svg';
 import photoIcon from '@/assets/photos.png';
 import calculatorIcon from '@/assets/animated_icons_calculator.svg';
-import calendarIcon from '@/assets/animated_icons_calendar.svg'
+import calendarIcon from '@/assets/animated_icons_calendar.svg';
+import poemgameIcon from '@/assets/animated_icons-_poemgame.svg';
 
 export default {
   name: 'Desktop',
@@ -74,7 +75,7 @@ export default {
           {
             name: '游戏',
             path: '/phone/poem',
-            icon: calculatorIcon
+            icon: poemgameIcon
           }
         ],
         [
