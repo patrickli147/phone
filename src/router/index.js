@@ -12,6 +12,7 @@ import Albums from '@/components/Albums'
 import Calculator from '@/components/Calculator'
 import Calendar from '@/components/Calendar'
 import Poem from '@/components/Poem'
+import UnsplashApp from '@/components/UnsplashApp'
 
 Vue.use(Router)
 
@@ -76,6 +77,11 @@ const router =  new Router({
           path: 'poem',
           name: 'Poem',
           component: Poem
+        },
+        {
+          path: 'unsapp',
+          name: 'UnsplashApp',
+          component: UnsplashApp
         },
         {
           path: '/*',

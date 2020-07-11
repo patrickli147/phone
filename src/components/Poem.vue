@@ -896,7 +896,7 @@ export default {
         opacity: 0;
         transform: translate3d(0, -500px, 0);
     }
-    60% {
+    40% {
         transform: translate3d(-10px, 20px, 0);
     }
     75% {

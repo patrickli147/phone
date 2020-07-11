@@ -56,7 +56,7 @@
           </div>
       </div>
       <div class="black-screen" v-else>
-          黑屏
+          锁屏
       </div>
   </div>
 </template>

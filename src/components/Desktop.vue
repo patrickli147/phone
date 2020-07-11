@@ -76,6 +76,11 @@ export default {
             name: '游戏',
             path: '/phone/poem',
             icon: poemgameIcon
+          },
+          {
+            name: 'uns',
+            path: '/phone/unsapp',
+            icon: poemgameIcon
           }
         ],
         [

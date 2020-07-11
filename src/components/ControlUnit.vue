@@ -32,7 +32,11 @@ export default {
           //true: control unit is collapsed
           isCollapsed: false,
           //start time of a long press
-          startTime: 0
+          startTime: 0,
+          //longpress interval
+          longPressInterval: null,
+          //true: is pressing
+          isPressing: false
       }
   },
   methods: {
@@ -65,15 +69,28 @@ export default {
       //longPressStart
       longPressStart() {
           this.startTime = Date.now();
+          this.isPressing = true;
           //console.log("start")
+
+          this.longPressInterval = setInterval(() => {
+              let currentTime = Date.now();
+              if (currentTime - this.startTime > 2000) {
+                  this.longPressEnd();
+              }
+          }, 100);
+
       },
       //longPressEnd
       longPressEnd() {
+          if (!this.isPressing) {
+              //按下动作已经结束或超过2000ms
+              return;
+          }
+
           const endTime = Date.now();
           if (endTime - this.startTime < 2000) {
               //time is not long enough
               this.changeLockState();
-              return;
           }
           else {
               if (!this.isPoweredOff) {
@@ -86,6 +103,9 @@ export default {
                   this.$emit("showPowerOnAnimation");
               }
           }
+
+          //按下动作结束
+          this.isPressing = false;
       },
       ...mapMutations({
           setLockState: 'LOCK_STATE',

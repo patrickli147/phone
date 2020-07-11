@@ -236,10 +236,12 @@ div.phone {
             }
         }
     }
+    .powerOffAnimation {
+        animation: powerOffAnimation 1s 5;
+    }
     div.control-unit-wrap {
 
         margin-left: 5%;
     }
 }
-
 </style>
