@@ -82,6 +82,7 @@ export default {
     .bottom-bar {
         width: 100%;
         height: 10%;
+        border-top: #eee solid 3px;
 
         display: flex;
         justify-content: center;
