@@ -1,21 +1,27 @@
 <template>
     <div class="unsplash-app-wrap">
-        <keep-alive>
-            <div class="current-page">
-                <component :is="currentComponent"></component>
-            </div>
-        </keep-alive>
+        <div class="current-page">
+            <transition name="leftfade" mode="out-in">
+                <keep-alive>
+                    <component :is="currentComponent"></component>
+                </keep-alive>
+            </transition>
+            
+        </div>
         
         <!-- 底部切换栏 开始-->
         <div class="bottom-bar">
-            <div class="welcome" @click="switchPage('welcome')">
+            <div class="bottom-item welcome" @click="switchPage('welcome')">
                 首页
             </div>
-            <div class="search" @click="switchPage('welcome')">
+            <div class="bottom-item search" @click="switchPage('search')">
                 搜索
             </div>
-            <div class="collections" @click="switchPage('welcome')">
+            <div class="bottom-item collections" @click="switchPage('collections')">
                 专辑
+            </div>
+            <div class="bottom-item collections" @click="switchPage('test')">
+                测试
             </div>
         </div>
         <!-- 底部切换栏 结束 -->
@@ -26,7 +32,7 @@
 import UnsplashWelcome from '@/components/UnsplashWelcome';
 import UnsplashSearch from '@/components/UnsplashSearch';
 import UnsplashCollections from '@/components/UnsplashCollections';
-
+import UnsplashTest from '@/components/UnsplashTest';
 
 export default {
     mounted() {
@@ -38,10 +44,11 @@ export default {
             componentNames: {
                 'colletions':'unsplash-collections',
                 'welcome':'unsplash-welcome',
-                'search':'unsplash-search'
+                'search':'unsplash-search',
+                'test': 'unsplash-test'
             },
             //当前的组件
-            currentComponent: 'unsplash-welcome'
+            currentComponent: 'unsplash-search'
         }
     },
     methods: {
@@ -57,7 +64,8 @@ export default {
     components: {
         UnsplashCollections,
         UnsplashSearch,
-        UnsplashWelcome
+        UnsplashWelcome,
+        UnsplashTest
     }
 }
 </script>
@@ -77,6 +85,19 @@ export default {
     .current-page {
         width: 100%;
         height: 90%;
+
+        //过渡动画
+        .leftfade-enter-active, .leftfade-leave-active {
+            transition: all .2s;
+        }
+        .leftfade-leave-to {
+            transform: translateX(-10px);
+            opacity: 0;
+        }
+        .leftfade-enter {
+            transform: translateX(10px);
+            opacity: 0;
+        }
     }
 
     .bottom-bar {
@@ -85,9 +106,17 @@ export default {
         border-top: #eee solid 3px;
 
         display: flex;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
         flex-wrap: nowrap;
+
+        .bottom-item {
+            margin: 2px;
+            border: 1px solid #eee;
+            border-radius: 3px;
+            width: 40px;
+            background-color: rgb(38, 169, 245);
+        }
     }
 }
 </style>

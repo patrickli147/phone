@@ -3,14 +3,24 @@
 
         <!-- 顶部搜索栏 开始 -->
         <div class="welcome-top-wrap">
-            <h1>welcome</h1>
+            <transition name="fade">
+                <h1 v-if="!isInputFocused">welcome</h1>
+            </transition>
+            
 
-            <div class="search-wrap">
-                <div class="search-icon">
-                    <img src="../assets/search.png" alt="">
-                </div>
+            <div :class="!isInputFocused ? 'search-wrap' : 'search-wrap zoom-animation'">
                 <div class="search-input">
-                    <input type="text" placeholder="搜索图片（推荐英文）">
+                    <input 
+                        @keyup="handleInputKeyup($event)"
+                        @focus="toggleInputFocused" 
+                        @blur="toggleInputFocused"
+                        type="text" 
+                        placeholder="搜索图片（推荐英文）" 
+                        v-model="searchInput"
+                    >
+                </div>
+                <div class="search-icon" @click="searchPhotos">
+                    搜索
                 </div>
             </div>
 
@@ -73,6 +83,7 @@ import _throttle from '../utils/throttle'
 
 export default {
     mounted() {
+        console.log("mounted")
         this.listPhotos();
     },
     data() {
@@ -93,7 +104,11 @@ export default {
             //是否在加载中
             isLoading: true,
             //是否加载完数据
-            isAllDataLoaded: false
+            isAllDataLoaded: false,
+            //搜索框输入
+            searchInput: '',
+            //true: input is focused
+            isInputFocused: false
         }
     },
     methods: {
@@ -137,17 +152,22 @@ export default {
          * @returns {string} 返回供img标签使用的url（base64）
          */
         async getImgsWithUrls(url, id) {
-            let res = await this.axios.get(url, {
-                responseType: 'arraybuffer'
-            });
-
-            if (!res.data) {
+            let res = null;
+            try {
+                res = await this.axios.get(url, {
+                    responseType: 'arraybuffer'
+                });
+            } catch(err) {
+                console.log(err);
+            }
+            
+            if (!res) {
                 //请求失败，用mock代替
                 let mockUrl = Mock.Random.image();
                 this.$refs[id].src = mockUrl;
                 if (Array.isArray(this.$refs[id])) {
                     //在v-for中,refInFor设置为true，返回一个数组
-                   this.$refs[id].src = mockUrl;
+                   this.$refs[id][0].src = mockUrl;
                 }
                 else {
                     //不是数组
@@ -280,7 +300,33 @@ export default {
             }
             toScroll.scrollTop = scrollToHeight;
         },
+        /**
+         * @func
+         * @desc 处理input的keyup事件
+         * @param {object} e keyup事件
+         */
+        handleInputKeyup(e) {
+            let key = e.key;
+            
+            if (key === "Enter" && this.searchInput.length > 0) {
+                //按下回车且搜索内容不为空时搜索
+                this.searchPhotos();
+            }
+        },
+        /**
+         * @func
+         * @desc 搜索
+         */
+        searchPhotos() {
 
+        },
+        /**
+         * @func
+         * @desc 翻转isInputFocused
+         */
+        toggleInputFocused() {
+            this.isInputFocused = !this.isInputFocused;
+        }
     }
 }
 </script>
@@ -301,30 +347,62 @@ export default {
     .welcome-top-wrap {
         width: 100%;
         height: 20%;
-        background-color: rgb(68, 46, 194);
+        background-color: rgb(190, 183, 233);
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
 
         h1 {
-
+            width: 100%
+        }
+        //h1的 过渡动画
+        .fade-enter-active, .fade-leave-active {
+            transition: all .4s;
+        }
+        .fade-enter, .fade-leave-to {
+            opacity: 0;
         }
 
         .search-wrap {
+            width: 100%;
+
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: nowrap;
+            font-size: 15px;
+            padding: 0 5px;
 
             .search-icon {
-                img {
-                    height: 15px;
-                    width: 15px;
-                }
+                width: 20%;
+                text-align: center;
+                background-color: rgb(50, 177, 250);
+                padding: 6px;
+                border-top-right-radius: 3px;
+                border-bottom-right-radius: 3px;
             }
 
             .search-input {
+                width: 80%;
+                text-align: right;
                 input {
-
+                    width: 90%;
+                    outline-style: none;
+                    border: 1px solid #ccc;
+                    padding: 5px;
+                    border-top-left-radius: 3px;
+                    border-bottom-left-radius: 3px;
+                }
+                input:hover {
+                    border-color: #66afe9;
                 }
             }
+        }
+        //zoom 动画
+        .zoom-animation {
+            animation: zoom 1s;
         }
     }
 
@@ -468,6 +546,28 @@ export default {
     }
     100% {
         background:rgb(5, 182, 252);
+    }
+}
+
+//缩放动画
+@keyframes zoom {
+    0% {
+        transform: scale(1);
+    }
+    20% {
+        transform: scale(1.1);
+    }
+    40% {
+        transform: scale(1);
+    }
+    60% {
+        transform: scale(0.8);
+    }
+    80% {
+        transform: scale(1);
+    }
+    100% {
+        transform: none;
     }
 }
 </style>
