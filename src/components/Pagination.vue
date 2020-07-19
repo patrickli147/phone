@@ -1,41 +1,44 @@
 <template>
-    <div 
-        class="pagination-wrap"
-        @scroll="handleWelcomePhotosScroll($event)"
-        ref="scroller"
-    >
-        <slot></slot>
+    <div class="pagination-outer-wrap">
+        <div 
+            class="pagination-wrap"
+            @scroll="handleWelcomePhotosScroll($event)"
+            ref="scroller"
+        >
+            <slot></slot>
 
-        <!-- 加载中 开始 -->
-        <div class="loading" v-show="isLoading">
-            <div class="loading-item"></div>
-            <div class="loading-item"></div>
-            <div class="loading-item"></div>
-            <div class="loading-item"></div>
-            <div class="loading-item"></div>
+            <!-- 加载中 开始 -->
+            <div class="loading" v-show="isLoading">
+                <div class="loading-item"></div>
+                <div class="loading-item"></div>
+                <div class="loading-item"></div>
+                <div class="loading-item"></div>
+                <div class="loading-item"></div>
+            </div>
+            <!-- 加载中 结束 -->
+
+            <!-- 到底信息 开始 -->
+            <div class="bottom-info" v-if="isAllDataLoaded">
+                我也是有底线的……
+            </div>
+            <!-- 到底信息 结束 -->
+
+            <!-- 返回顶部 开始 -->
+            <div class="scroll-btn back-to-top" v-show="isBackToTopShown" @click="backToTop('scroller')">
+                <img src="../assets/down.png" alt="" title="返回顶部">
+
+                <!-- todo 拖动 -->
+            </div>
+            <!-- 返回顶部 结束 -->
+
+            <!-- 返回上次浏览位置 开始 -->
+            <div class="scroll-btn" v-show="!isBackToTopShown" @click="scrollTo('scroller', lastScrollTop)">
+                <img src="../assets/down.png" alt="" title="返回上次浏览位置">
+            </div>
+            <!-- 返回上次浏览位置 结束 -->
         </div>
-        <!-- 加载中 结束 -->
-
-        <!-- 到底信息 开始 -->
-        <div class="bottom-info" v-if="isAllDataLoaded">
-            我也是有底线的……
-        </div>
-        <!-- 到底信息 结束 -->
-
-        <!-- 返回顶部 开始 -->
-        <div class="scroll-btn back-to-top" v-show="isBackToTopShown" @click="backToTop('scroller')">
-            <img src="../assets/down.png" alt="" title="返回顶部">
-
-            <!-- todo 拖动 -->
-        </div>
-        <!-- 返回顶部 结束 -->
-
-        <!-- 返回上次浏览位置 开始 -->
-        <div class="scroll-btn" v-show="!isBackToTopShown" @click="scrollTo('scroller', lastScrollTop)">
-            <img src="../assets/down.png" alt="" title="返回上次浏览位置">
-        </div>
-        <!-- 返回上次浏览位置 结束 -->
     </div>
+    
 </template>
 
 <script>
@@ -167,6 +170,13 @@ export default {
 </script>
 
 <style lang='scss' scoped>
+.pagination-outer-wrap {
+    width: 100%;
+    height: 100%;
+    //绝对定位的参照
+    position: relative;
+}
+
 .pagination-wrap {
     width: 100%;
     height: 100%;

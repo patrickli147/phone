@@ -21,8 +21,15 @@
                     </div>
 
                     <!-- 输入联想 开始 -->
-                    <div class="input-relevant">
-
+                    <div class="input-relevant" v-show="isInputFocused">
+                        <div 
+                            class="history-item"
+                            v-for="(item, index) in searchHistory"
+                            :key="index"
+                            @mousedown="handleHistoryItemMousedown(index)"
+                        >   
+                            {{item}}
+                        </div>
                     </div>
                     <!-- 输入联想 结束 -->
                 </div>
@@ -38,21 +45,21 @@
                 :class="selectedClassificationIndex === 0 ? 'classification-item selected' : 'classification-item'"
                 @click="selectClassification(0)"
             >
-                Photos {{totalPhotos}}
+                Photos <span v-show="selectedClassificationIndex === 0">{{totalPhotos}}</span>
             </div>
             <div 
                 :class="selectedClassificationIndex === 1 ? 'classification-item selected' : 'classification-item'"
                 @click="selectClassification(1)"
             >
-                Collctions {{totalCollections}}
+                Collctions <span v-show="selectedClassificationIndex === 1">{{totalCollections}}</span>
             </div>
             <div 
                 :class="selectedClassificationIndex === 2 ? 'classification-item selected' : 'classification-item'"
                 @click="selectClassification(2)"
             >
-                Users {{totalUsers}}
+                Users <span v-show="selectedClassificationIndex === 2">{{totalUsers}}</span>
             </div>
-            <div class="classification-item filter">
+            <div class="classification-item filter" v-show="selectedClassificationIndex === 0">
                 <select 
                     name="orderby" id="" 
                     v-model="selectedOrderBy"
@@ -67,12 +74,14 @@
 
         <!-- 搜索结果 开始 -->
         <div class="search-outcome">
+            <!-- 搜索的图片 开始 -->
             <pagination
+                v-show="selectedClassificationIndex === 0"
                 :isLoading="isPhotosLoading"
                 :isAllDataLoaded="isPhotosAllDataLoaded"
                 @nextpage="handleNextPageEvent('photos')"
             >
-                <div class="searched-photos" v-show="searchPhotosData.length">
+                <div class="searched-photos" v-show="searchPhotosData.length > 0">
                     <div class="photos-item"
                         v-for="count in searchPhotosData.length"
                         :key="count"
@@ -81,6 +90,58 @@
                     </div>
                 </div>
             </pagination>
+            <!-- 搜索的图片 结束 -->
+
+            <!-- 搜索的专辑 开始 -->
+            <pagination
+                v-show="selectedClassificationIndex === 1"
+                :isLoading="isCollectionsLoading"
+                :isAllDataLoaded="isCollectionsAllDataLoaded"
+                @nextpage="handleNextPageEvent('collections')"
+            >
+                <div class="searched-collections" v-show="searchCollectionsUrls.length > 0">
+                    <div class="collections-item"
+                        v-for="(item, index) in searchCollectionsUrls"
+                        :key="index"
+                    >
+                        <!-- preview photos -->
+                        <div class="preview-photos">
+                            <div class="main-photo">
+                                <img :src="item[0]" alt="">
+                            </div>
+                            <div class="other">
+                                <img :src="item[1]" alt="">
+                                <img :src="item[2]" alt="">
+                                <img :src="item[3]" alt="">
+                            </div>
+                        </div>
+                        <!-- preview photos end -->
+
+                        <div class="collection-desc">
+                            <div class="title">
+                                {{searchCollectionsData[index].title}}
+                            </div>
+                            <div class="info">
+                                {{searchCollectionsData[index].total_photos}} photos · Curated by {{searchCollectionsData[index].user.username}}
+                            </div>
+                            <div class="tags">
+                                <div 
+                                    class="tag"
+                                    v-for="tagcount in 3"
+                                    :key="tagcount"
+                                    @click="handleTagClicked(searchCollectionsData[index].tags[tagcount - 1].title)"
+                                >
+                                    {{searchCollectionsData[index].tags[tagcount - 1].title}}
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </pagination>
+            <!-- 搜索的专辑 结束 -->
+
+
         </div>
         <!-- 搜索结果 结束 -->
 
@@ -103,15 +164,15 @@ export default {
             //选择的classification
             selectedClassificationIndex: 0,
             //true: 加载中
-            isPhotosLoading: true,
+            isPhotosLoading: false,
             //true: 数据加载完毕
             isPhotosAllDataLoaded: false,
             //true: 加载中
-            isCollectionsLoading: true,
+            isCollectionsLoading: false,
             //true: 数据加载完毕
             isCollectionsAllDataLoaded: false,
             //true: 加载中
-            isUsersLoading: true,
+            isUsersLoading: false,
             //true: 数据加载完毕
             isUsersAllDataLoaded: false,
             //选择的排序方式
@@ -129,7 +190,6 @@ export default {
                 'query': '',
                 'page': 1,            //Page number to retrive
                 'per_page': 18,       // Number of items per page.
-                'order_by': 'latest', // How to sort the photos. (latest, oldest, popular)
                 'client_id': 'GT_Bfahw73NpMk9NHvcCMqBIyZIpxdhY4qMbCV3TgPM'
             },
             //searchUsers params
@@ -137,7 +197,6 @@ export default {
                 'query': '',
                 'page': 1,            //Page number to retrive
                 'per_page': 18,       // Number of items per page.
-                'order_by': 'latest', // How to sort the photos. (latest, oldest, popular)
                 'client_id': 'GT_Bfahw73NpMk9NHvcCMqBIyZIpxdhY4qMbCV3TgPM'
             },
             //searchPhotos返回的data
@@ -165,7 +224,7 @@ export default {
             //users页数总计
             totalUsersPages: 0,
             //搜索历史
-            searchHistory: []
+            searchHistory: ['husky', 'apple', 'red', 'car']
         }
     },
     methods: {
@@ -194,43 +253,80 @@ export default {
          * @desc 搜索
          */
         search() {
+
             if (this.searchInput === '') {
                 //输入为空
                 return;
             }
 
-            if (this.searchInput === this.searchHistory[this.searchHistory.length - 1]) {
+            if (this.searchInput === this.searchHistory[0]) {
                 //输入与上次相同
                 return;
             }
             else {
                 //记录历史
-                this.searchHistory = [...this.searchHistory, this.searchInput];
+                if (this.searchHistory.indexOf(this.searchInput) >= 0) {
+                    //历史中存在
+                    this.searchHistory = [this.searchInput, ...(this.searchHistory.filter((value) => {
+                        return value !== this.searchInput;
+                    }))];
+                }
+                else {
+                    //历史中不存在
+                    this.searchHistory = [this.searchInput, ...this.searchHistory];
+                }
+                
                 
                 //清除之前的搜索数据
                 this.initData();
             }
             
 
-            switch (this.selectedClassificationIndex) {
-                case 0: 
-                    this.searchPhotos();
-                    break;
-                case 1: 
-                    this.searchCollections();
-                    break;
-                case 2: 
-                    this.searchUsers();
-                    break;
-                default: 
-                    break;
-            }
+            // switch (this.selectedClassificationIndex) {
+            //     case 0: 
+            //         this.searchPhotos();
+            //         break;
+            //     case 1: 
+            //         this.searchCollections();
+            //         break;
+            //     case 2: 
+            //         this.searchUsers();
+            //         break;
+            //     default: 
+            //         break;
+            // }
+            this.searchPhotos();
+            this.searchCollections();
+            this.searchUsers();
+
         },
+        /**
+         * @func
+         * @desc 选择classification
+         * @param {string} index classification的index
+         */
         selectClassification(index) {
             this.selectedClassificationIndex = index;
 
             //todo
             //reload
+            if (index === 0) {
+                if (this.searchPhotosData.length === 0) {
+                    this.search();
+                }
+            }
+            else if (index === 1) {
+                if (this.searchCollectionsData.length === 0) {
+                    this.search();
+                }
+            }
+            else {
+                //index = 2
+                if (this.searchUsersData.length === 0) {
+                    this.search();
+                }
+            }
+
         },
         /**
          * @func
@@ -275,6 +371,10 @@ export default {
                     break;
             }
         },
+        /**
+         * @func
+         * @desc 处理orderby的change事件
+         */
         handleSelectedOrderByChanged() {
             console.log(this.selectedOrderBy);
 
@@ -333,22 +433,65 @@ export default {
          */
         searchCollections() {
             //显示加载中
-            this.isLoading = true;
+            this.isCollectionsLoading = true;
+
+            //直接加入对象不是响应式
+            this.searchCollectionsParams.query = this.searchInput;
 
             this.axios({
                 method:'get',
-                url: 'https://api.unsplash.com/photos/',
-                params: this.searchPhotosParams
+                url: 'https://api.unsplash.com/search/collections',
+                params: this.searchCollectionsParams
             }).then(res => {
                 console.log(res);
 
-                //隐藏加载中
-                this.isLoading = false;
+                let data = res && res.data;
+                if (data) {
+                    let results = data.results;
+
+                    this.totalCollections = data.total;
+                    this.totalCollectionsPages = data.total_pages;
+
+                    this.searchCollectionsData = [...this.searchCollectionsData, ...results];
+
+                    for (let i = 0; i < results.length; i ++) {
+                        //获取4张previewphotos的base64 url
+                        let previewPhotos = results[i].preview_photos;
+                        let previewPhotosUrls = [];
+                        let promises = [];
+
+                        for (let j = 0; j < 4; j ++) {
+                            promises[j] = new Promise(resolve => {
+                                //一定会resolve
+                                this.getImgsWithUrl(previewPhotos[j].urls.small)
+                                    .then(res => {
+                                        resolve(res);
+                                    }).catch (err => {
+                                        console.log(err);
+                                    });
+                            });
+                        }
+
+                        Promise.allSettled(promises)
+                            .then(res1 => {
+                                //隐藏加载中
+                                this.isCollectionsLoading = false;
+
+                                //res is an array
+                                res1.forEach(val => {
+                                    previewPhotosUrls.push(val.value);
+                                });
+                                this.searchCollectionsUrls = [...this.searchCollectionsUrls, previewPhotosUrls];
+
+                                console.log(this.searchCollectionsUrls);
+                            });
+                    }
+                }
             }).catch(err => {
                 console.log(err);
 
                 //隐藏加载中
-                this.isLoading = false;
+                this.isCollectionsLoading = false;
             });
         },
         /**
@@ -357,22 +500,25 @@ export default {
          */
         searchUsers() {
             //显示加载中
-            this.isLoading = true;
+            this.isCollectionsLoading = true;
+
+            //直接加入对象不是响应式
+            this.searchUsersParams.query = this.searchInput;
 
             this.axios({
                 method:'get',
-                url: 'https://api.unsplash.com/photos/',
-                params: this.searchPhotosParams
+                url: 'https://api.unsplash.com/search/users',
+                params: this.searchUsersParams
             }).then(res => {
                 console.log(res);
 
                 //隐藏加载中
-                this.isLoading = false;
+                this.isCollectionsLoading = false;
             }).catch(err => {
                 console.log(err);
 
                 //隐藏加载中
-                this.isLoading = false;
+                this.isCollectionsLoading = false;
             });
         },
         /**
@@ -389,6 +535,9 @@ export default {
                 });
             } catch(err) {
                 console.log(err);
+                //请求失败，用mock代替
+                let mockUrl = Mock.Random.image();
+                return Promise.resolve(mockUrl);
             }
             
             if (!res) {
@@ -426,6 +575,24 @@ export default {
             this.searchUsersData = [];
             this.searchUsersParams.page = 1;
             this.totalUsers = 0;
+        },
+        /**
+         * @func
+         * @desc 处理history-item的mousedown事件
+         * @param {string} index history-item的index
+         */
+        handleHistoryItemMousedown(index) {
+            this.searchInput = this.searchHistory[index];
+            this.search();
+        },
+        /**
+         * @func
+         * @desc 处理tag的点击事件
+         * @param {string} tag 点击的tag
+         */
+        handleTagClicked(tag) {
+            this.searchInput = tag;
+            this.search();
         }
 
     },
@@ -483,6 +650,28 @@ export default {
 
         .input-relevant {
             position: absolute;
+            left: 2%;
+            //bottom: 0;
+            background:#fff;
+            width: 98%;
+            max-height: 200px;
+            overflow: scroll;
+            z-index: 5;
+            border-left: 2px solid #eee;
+            border-right: 2px solid #eee;
+            border-bottom: 2px solid #eee;
+            border-radius: 0 0 15px 5px;
+            padding-left: 2px;
+
+            .history-item {
+                text-align: left;
+            }
+            .history-item:hover {
+                background-color: rgb(8, 250, 230);
+            }
+        }
+        .input-relevant::-webkit-scrollbar {
+            display: none;
         }
     }
 
@@ -499,14 +688,16 @@ export default {
 .search-classification {
     padding: 5px;
     border-bottom: 1px solid #eee;
+    //固定高度防止切换时跳动
+    height: 36px;
 
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     flex-wrap: nowrap;
 
     .classification-item {
-        width: 25%;
+        width: 20%;
         opacity: .5;
         border-bottom: 1px solid #fff;
 
@@ -530,6 +721,7 @@ export default {
         opacity: 1;
     }
     .selected {
+        width: 35%;
         border-bottom: 1px solid black;
         opacity: 1;
     }
@@ -560,6 +752,98 @@ export default {
         }
         .photos-item:hover {
             box-shadow: .5px .5px .5px rgba(5, 5, 5, 0.623);
+        }
+    }
+    .searched-collections {
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .collections-item {
+            width: 100%;
+            border-bottom: 3px solid #eee;
+            padding: 5px 0;
+
+            .preview-photos {
+                width: 100%;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                .main-photo {
+                    width: 70%;
+                    height: 200px;
+
+                    img {
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+
+                .other {
+                    width: 30%;
+                    height: 200px;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-wrap: wrap;
+
+                    img {
+                        width: 100%;
+                        height: calc(100% / 3);
+                    }
+                }
+            }
+
+            .collection-desc {
+                width: 100%;
+                text-align: left;
+                padding: 5px 10px;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+
+                .title {
+                    width: 100%;
+                    font-weight: 600;
+                }
+                .info {
+                    width: 100%;
+                    opacity: .8;
+                }
+                .tags {
+                    width: 100%;
+
+                    display: flex;
+                    justify-content: flex-start;
+                    align-items: center;
+                    
+                    .tag {
+                        background-color: #eee;
+                        opacity: .8;
+                        transition: all .2s;
+                        margin: 0 10px;
+                        padding: 3px 10px;
+                        border-radius: 5px;
+                    }
+                    .tag:hover {
+                        opacity: 1;
+                    }
+
+                    :first-child {
+                        //第一个元素只需要右边距
+                        margin-left: 0;
+                        margin-right: 10px;
+                    }
+                }
+            }
         }
     }
 }
