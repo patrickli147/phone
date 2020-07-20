@@ -81,7 +81,6 @@ export default {
   
   user-select: none;
   min-width: 420px;
-
   
 }
 </style>
