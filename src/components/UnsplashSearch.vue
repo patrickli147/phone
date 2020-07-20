@@ -65,8 +65,8 @@
                     v-model="selectedOrderBy"
                     @change="handleSelectedOrderByChanged"
                 >
-                    <option value="relevant">相关</option>
                     <option value="latest">最新</option>
+                    <option value="relevant">相关</option>
                 </select>
             </div>
         </div>
@@ -86,7 +86,7 @@
                         v-for="count in searchPhotosData.length"
                         :key="count"
                     >
-                        <img :title="searchPhotosData[count - 1]['alt_description']" :src='searchUsersUrls[count - 1]' alt="">
+                        <img :title="searchPhotosData[count - 1]['alt_description']" :src='searchPhotosUrls[count - 1]' alt="">
                     </div>
                 </div>
             </pagination>
@@ -141,6 +141,47 @@
             </pagination>
             <!-- 搜索的专辑 结束 -->
 
+            <!-- 搜索的用户 开始 -->
+            <pagination
+                v-show="selectedClassificationIndex === 2"
+                :isLoading="isUsersLoading"
+                :isAllDataLoaded="isUsersAllDataLoaded"
+                @nextpage="handleNextPageEvent('users')"
+            >
+                <div class="searched-users" v-show="searchUsersUrls.length > 0">
+                    <div class="collections-item"
+                        v-for="(item, index) in searchUsersUrls"
+                        :key="index"
+                    >
+                        <div class="userinfo">
+                            <div class="profile-img">
+                                <img :src="item[0]" alt="">
+                            </div>
+                            <div class="username">
+                                <div class="nameitem">
+                                    {{searchUsersData[index].first_name}} {{searchUsersData[index].last_name}}
+                                </div>
+                                <div class="nameitem">
+                                    @{{searchUsersData[index].username}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="userphotos">
+                            <div class="photoitem">
+                                <img :src="item[1]" alt="">
+                            </div>
+                            <div class="photoitem">
+                                <img :src="item[2]" alt="">
+                            </div>
+                            <div class="photoitem">
+                                <img :src="item[3]" alt="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </pagination>
+            <!-- 搜索的用户 结束 -->
 
         </div>
         <!-- 搜索结果 结束 -->
@@ -308,8 +349,6 @@ export default {
         selectClassification(index) {
             this.selectedClassificationIndex = index;
 
-            //todo
-            //reload
             if (index === 0) {
                 if (this.searchPhotosData.length === 0) {
                     this.search();
@@ -334,7 +373,6 @@ export default {
          * @param {string} classification 翻页的页面
          */
         handleNextPageEvent(classification) {
-            console.log("next page")
 
             switch (classification) {
                 case 'photos':
@@ -376,9 +414,16 @@ export default {
          * @desc 处理orderby的change事件
          */
         handleSelectedOrderByChanged() {
-            console.log(this.selectedOrderBy);
+            this.searchPhotosParams.order_by = this.selectedOrderBy;
 
-            //todo
+            //init search data
+            this.searchPhotosUrls = [];
+            this.searchPhotosData = [];
+            this.searchPhotosParams.page = 1;
+            this.totalPhotos = 0;
+
+            //searchAgain
+            this.searchPhotos();
         },
         /**
          * @func
@@ -396,7 +441,7 @@ export default {
                 url: 'https://api.unsplash.com/search/photos',
                 params: this.searchPhotosParams
             }).then(res => {
-                console.log(res);
+                //console.log(res);
 
                 if (res.data) {
                     //返回了data
@@ -411,7 +456,7 @@ export default {
                         this.getImgsWithUrl(results[i].urls.small).then(url => {
                             //this.searchPhotosUrls.push(url);
                             //触发响应
-                            this.searchUsersUrls = [...this.searchUsersUrls, url]
+                            this.searchPhotosUrls = [...this.searchPhotosUrls, url]
                         }).catch(err => {
                             console.log(err);
                         });
@@ -443,7 +488,7 @@ export default {
                 url: 'https://api.unsplash.com/search/collections',
                 params: this.searchCollectionsParams
             }).then(res => {
-                console.log(res);
+                //console.log(res);
 
                 let data = res && res.data;
                 if (data) {
@@ -482,8 +527,6 @@ export default {
                                     previewPhotosUrls.push(val.value);
                                 });
                                 this.searchCollectionsUrls = [...this.searchCollectionsUrls, previewPhotosUrls];
-
-                                console.log(this.searchCollectionsUrls);
                             });
                     }
                 }
@@ -500,7 +543,7 @@ export default {
          */
         searchUsers() {
             //显示加载中
-            this.isCollectionsLoading = true;
+            this.isUsersLoading = true;
 
             //直接加入对象不是响应式
             this.searchUsersParams.query = this.searchInput;
@@ -510,15 +553,62 @@ export default {
                 url: 'https://api.unsplash.com/search/users',
                 params: this.searchUsersParams
             }).then(res => {
-                console.log(res);
+                let data = res && res.data;
+                if (data) {
+                    let results = data.results;
 
-                //隐藏加载中
-                this.isCollectionsLoading = false;
+                    this.totalUsers = data.total;
+                    this.totalUsersPages = data.total_pages;
+
+                    this.searchUsersData = [...this.searchUsersData, ...results];
+
+                    for (let i = 0; i < results.length; i ++) {
+                        let userPhotos = [results[i].profile_image.large, ...results[i].photos];
+                        let userPhotosUrls = [];
+                        let promises = [];
+
+                        for (let j = 0; j < 4; j ++) {
+                            if (j === 0) {
+                                promises[j] = new Promise(resolve => {
+                                    this.getImgsWithUrl(userPhotos[j])
+                                        .then(res => {
+                                            resolve(res);
+                                        }).catch(err => {
+                                            console.log(err);
+                                        });
+                                })
+                            }
+                            else {
+                                promises[j] = new Promise(resolve => {
+                                    this.getImgsWithUrl(userPhotos[j].urls.small)
+                                        .then(res => {
+                                            resolve(res);
+                                        }).catch(err => {
+                                            console.log(err);
+                                        })
+                                });
+                            }
+                        }
+
+                        Promise.allSettled(promises)
+                            .then(res => {
+                                this.isUsersLoading = false;
+
+                                res.forEach(val => {
+                                    userPhotosUrls.push(val.value);
+                                });
+
+                                this.searchUsersUrls = [...this.searchUsersUrls, userPhotosUrls];
+                            });
+                    }
+
+                }
+                
             }).catch(err => {
                 console.log(err);
 
                 //隐藏加载中
-                this.isCollectionsLoading = false;
+                this.isUsersLoading = false;
             });
         },
         /**
@@ -536,13 +626,13 @@ export default {
             } catch(err) {
                 console.log(err);
                 //请求失败，用mock代替
-                let mockUrl = Mock.Random.image();
+                let mockUrl = Mock.Random.dataImage();
                 return Promise.resolve(mockUrl);
             }
             
             if (!res) {
                 //请求失败，用mock代替
-                let mockUrl = Mock.Random.image();
+                let mockUrl = Mock.Random.dataImage();
                 return Promise.resolve(mockUrl);
             }
             else {
@@ -700,6 +790,8 @@ export default {
         width: 20%;
         opacity: .5;
         border-bottom: 1px solid #fff;
+        white-space: nowrap;
+        transition: all .3s;
 
         select {
             width: 100%;
@@ -841,6 +933,83 @@ export default {
                         //第一个元素只需要右边距
                         margin-left: 0;
                         margin-right: 10px;
+                    }
+                }
+            }
+        }
+    }
+    .searched-users {
+        width: 100%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .collections-item {
+            width: 100%;
+            border: 1px solid #eee;
+            padding: 0 10px;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+
+            .userinfo {
+                width: 100%;
+                
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: nowrap;
+
+                .profile-img {
+                    width: 20%;
+                    flex: 0 0 1;
+                    text-align: left;
+                    img {
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                    }
+                }
+
+                .username {
+                    width: 80%;
+                    text-align: left;
+                    flex: 0 0 1;
+
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    .nameitem {
+                        width: 100%;
+                        padding-left: 10px;
+                    }
+
+                    :nth-child(2) {
+                        opacity: .5;
+                    }
+                }
+            }
+
+            .userphotos {
+                width: 100%;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: nowrap;
+
+                .photoitem {
+                    width: 33.33%;
+                    flex: 0 0 1;
+
+                    img {
+                        width: 100px;
+                        height: 80px;
                     }
                 }
             }

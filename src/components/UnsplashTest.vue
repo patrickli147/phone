@@ -97,7 +97,6 @@ export default {
             }).then(res => {
                 this.isLoading = false;
 
-                console.log(res);
                 if (res.data) {
                     if (!this.dataOfListPhotos) {
                         //初始为null
@@ -132,7 +131,7 @@ export default {
             
             if (!res) {
                 //请求失败，用mock代替
-                let mockUrl = Mock.Random.image();
+                let mockUrl = Mock.Random.dataImage();
                 this.$refs[id].src = mockUrl;
                 if (Array.isArray(this.$refs[id])) {
                     //在v-for中,refInFor设置为true，返回一个数组
@@ -192,7 +191,6 @@ export default {
          * @desc 处理翻页事件
          */
         handleNextPageEvent() {
-            console.log("nextpage captured")
             if (this.listPhotosParams.page >= 20) {
                 //数据加载完毕
                 this.isAllDataLoaded = true;
