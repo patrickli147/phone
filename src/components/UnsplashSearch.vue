@@ -85,6 +85,7 @@
                     <div class="photos-item"
                         v-for="count in searchPhotosData.length"
                         :key="count"
+                        @click="routeToPhoto(count - 1)"
                     >
                         <img :title="searchPhotosData[count - 1]['alt_description']" :src='searchPhotosUrls[count - 1]' alt="">
                     </div>
@@ -103,6 +104,7 @@
                     <div class="collections-item"
                         v-for="(item, index) in searchCollectionsUrls"
                         :key="index"
+                        @click="routeToCollection(index)"
                     >
                         <!-- preview photos -->
                         <div class="preview-photos">
@@ -196,6 +198,9 @@ import Mock from 'mockjs';
 
 
 export default {
+    mounted() {
+        
+    },
     data() {
         return {
             //搜索框输入
@@ -265,7 +270,7 @@ export default {
             //users页数总计
             totalUsersPages: 0,
             //搜索历史
-            searchHistory: ['husky', 'apple', 'red', 'car']
+            searchHistory: []
         }
     },
     methods: {
@@ -683,11 +688,52 @@ export default {
         handleTagClicked(tag) {
             this.searchInput = tag;
             this.search();
+        },
+        /**
+         * @func
+         * @desc 处理翻页事件
+         * @param {number} index 当前图片的index
+         */
+        routeToPhoto(index) {
+            this.$router.push({
+                name: 'UnsplashPhoto',
+                params: {
+                    data: this.searchPhotosData,
+                    index,
+                    urls: this.searchPhotosUrls
+                }
+            });
+        },
+        /**
+         * @func
+         * @desc 路由到专辑详情
+         * @param {number} index 当前专辑的index
+         */
+        routeToCollection(index) {  
+            this.$router.push({
+                name: 'UnsplashCollection',
+                params: {
+                    data: this.searchCollectionsData[index]
+                }
+            })
         }
 
     },
     components: {
         Pagination
+    },
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            // 通过 `vm` 访问组件实例
+            let query = vm.$route.query.searchInput;
+            let classificationIndex = vm.$route.query.classificationIndex;
+
+            if (query) {
+                vm.searchInput = query;
+                vm.selectedClassificationIndex = classificationIndex;
+                vm.search();
+            }
+        });
     }
 }
 </script>

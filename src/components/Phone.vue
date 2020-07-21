@@ -145,11 +145,6 @@ export default {
               //power off 
             this.powerOff();
           }   
-      },
-      '$route'(to, from) {
-          //console.log(from);
-          console.log('route changed from ' + from.path + ' to ' + to.path);
-          //console.log(this.$route)
       }
   }
 }

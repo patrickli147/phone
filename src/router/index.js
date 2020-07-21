@@ -13,6 +13,12 @@ import Calculator from '@/components/Calculator'
 import Calendar from '@/components/Calendar'
 import Poem from '@/components/Poem'
 import UnsplashApp from '@/components/UnsplashApp'
+import UnsplashWelcome from '@/components/UnsplashWelcome';
+import UnsplashSearch from '@/components/UnsplashSearch';
+import UnsplashCollections from '@/components/UnsplashCollections';
+import UnsplashPhoto from '@/components/UnsplashPhoto';
+import UnsplashCollection from '@/components/UnsplashCollection';
+
 
 Vue.use(Router)
 
@@ -81,7 +87,38 @@ const router =  new Router({
         {
           path: 'unsapp',
           name: 'UnsplashApp',
-          component: UnsplashApp
+          component: UnsplashApp,
+          children: [
+            {
+              path: 'welcome',
+              name: 'UnsplashWelcome',
+              component: UnsplashWelcome
+            },
+            {
+              path: 'search',
+              name: 'UnsplashSearch',
+              component: UnsplashSearch
+            },
+            {
+              path: 'collections',
+              name: 'UnsplashCollections',
+              component: UnsplashCollections
+            },
+            {
+              path: 'photo',
+              name: 'UnsplashPhoto',
+              component: UnsplashPhoto
+            },
+            {
+              path: 'collection',
+              name: 'UnsplashCollection',
+              component: UnsplashCollection
+            },
+            {
+              path: '/*',
+              component: UnsplashWelcome
+            }
+          ]
         },
         {
           path: '/*',

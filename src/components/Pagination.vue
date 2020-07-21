@@ -55,8 +55,6 @@ export default {
             isBackToTopShown: false,
             //上次浏览位置
             lastScrollTop: 0,
-            //
-            isLoading2: this.isLoading
         }
     },
     methods: {

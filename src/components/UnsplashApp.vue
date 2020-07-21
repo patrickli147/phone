@@ -3,7 +3,8 @@
         <div class="current-page">
             <transition name="leftfade" mode="out-in">
                 <keep-alive>
-                    <component :is="currentComponent"></component>
+                    <!-- <component :is="currentComponent"></component> -->
+                    <router-view></router-view>
                 </keep-alive>
             </transition>
             
@@ -29,10 +30,10 @@
 </template>
 
 <script>
-import UnsplashWelcome from '@/components/UnsplashWelcome';
-import UnsplashSearch from '@/components/UnsplashSearch';
-import UnsplashCollections from '@/components/UnsplashCollections';
-import UnsplashTest from '@/components/UnsplashTest';
+// import UnsplashWelcome from '@/components/UnsplashWelcome';
+// import UnsplashSearch from '@/components/UnsplashSearch';
+// import UnsplashCollections from '@/components/UnsplashCollections';
+// import UnsplashTest from '@/components/UnsplashTest';
 
 export default {
     mounted() {
@@ -41,12 +42,12 @@ export default {
     data() {
         return {
             //组件的id
-            componentNames: {
-                'colletions':'unsplash-collections',
-                'welcome':'unsplash-welcome',
-                'search':'unsplash-search',
-                'test': 'unsplash-test'
-            },
+            componentNames: [
+                'colletions',
+                'welcome',
+                'search',
+                'test'
+            ],
             //当前的组件
             currentComponent: 'unsplash-search'
         }
@@ -58,14 +59,20 @@ export default {
          * @param {string} pageid 要切换到的page的id
          */
         switchPage(pageid) {
-            this.currentComponent = this.componentNames[pageid];
+            if (this.currentComponent === pageid) {
+                return;
+            }
+            else {
+                this.currentComponent = pageid;
+                this.$router.push(`/phone/unsapp/${pageid}`);
+            }
         }
     },
     components: {
-        UnsplashCollections,
-        UnsplashSearch,
-        UnsplashWelcome,
-        UnsplashTest
+        // UnsplashCollections,
+        // UnsplashSearch,
+        // UnsplashWelcome,
+        // UnsplashTest
     }
 }
 </script>
