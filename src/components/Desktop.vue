@@ -44,6 +44,7 @@ import photoIcon from '@/assets/photos.png';
 import calculatorIcon from '@/assets/animated_icons_calculator.svg';
 import calendarIcon from '@/assets/animated_icons_calendar.svg';
 import poemgameIcon from '@/assets/animated_icons-_poemgame.svg';
+import unsIcon from '@/assets/uns.png';
 
 export default {
   name: 'Desktop',
@@ -79,8 +80,8 @@ export default {
           },
           {
             name: 'uns',
-            path: '/phone/unsapp',
-            icon: poemgameIcon
+            path: '/phone/unsapp/welcome',
+            icon: unsIcon
           }
         ],
         [

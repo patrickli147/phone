@@ -33,7 +33,7 @@
                 <div class="nameitem">
                     {{currentUser.name}}
                 </div>
-                <div class="nameitem">
+                <div class="nameitem" @click="routeToUser(currentIndex)">
                     @{{currentUser.username}}
                 </div>
             </div>
@@ -131,7 +131,20 @@ export default {
                 .catch(err => {
                     console.log(err);
                 })
-        }
+        },
+        /**
+         * @func
+         * @desc 路由到用户详情
+         * @param {number} index 照片的index
+         */
+        routeToUser(index) {
+            this.$router.push({
+                name: 'UnsplashUser',
+                params: {
+                    data: this.dataOfPhotos[index].user,
+                }
+            })
+        },
     },
     beforeRouteEnter (to, from, next) {
         next(vm => {
@@ -145,6 +158,9 @@ export default {
                 vm.currentIndex = index;
                 vm.urlsOfPhotos = urls;
             }
+
+            vm.currentUserImg = '';
+            vm.getCurrentUserImg();
         });
     },
     computed: {
@@ -289,9 +305,13 @@ export default {
         flex-wrap: nowrap;
 
         .profile-img {
-            width: 20%;
+            width: 50px;
+            height: 50px;
             flex: 0 0 1;
             text-align: left;
+            border: 1px solid #eee;
+            border-radius: 50%;
+
             img {
                 width: 50px;
                 height: 50px;
@@ -315,6 +335,11 @@ export default {
 
             :nth-child(2) {
                 opacity: .5;
+                transition: all .2s;
+            }
+            :nth-child(2):hover {
+                opacity: 1;
+                text-decoration: underline;
             }
         }
     }

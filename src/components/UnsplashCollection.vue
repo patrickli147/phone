@@ -12,7 +12,7 @@
                 {{collectionData.title}}
             </div>
             <div class="info">
-                {{collectionData.total_photos}} photos · Curated by {{collectionData.user.username}}
+                {{collectionData.total_photos}} photos · Curated by <span class="userlink" @click="routeToUser">{{collectionData.user.username}}</span>
             </div>
             <div class="tags">
                 <div 
@@ -54,12 +54,11 @@
 
 <script>
 import imgGetter from '../utils/imgGetter';
-import {mapGetters} from 'vuex';
+import {mapGetters, mapMutations} from 'vuex';
 import Pagination from '@/components/Pagination';
 
 export default {
     mounted() {
-        console.log("mouted")
         //this.getCollectionPhotos();
     },
     data() {
@@ -127,10 +126,15 @@ export default {
          * @desc 获取专辑照片数据
          */
         handleNextPageEvent() {
+            if (this.isAllDataLoaded) {
+                return;
+            }
+
             let total = this.collectionData.total_photos
-            let totalPages = Math.floor(total / 18) + 1;
-            if (this.photosParams.page < totalPages) {
-                this.page ++;
+            let current = 18 * this.photosParams.page;
+
+            if (current < total) {
+                this.photosParams.page ++;
                 this.getCollectionPhotos();
             }
             else {
@@ -172,17 +176,42 @@ export default {
          * @desc 处理返回
          */
         handleBackiconClicked() {
-            let pageStack = this.pageStack;
-            pageStack.pop();
-            this.$router.push(pageStack.pop());
+            if (window.history.length > 1) {
+                let pageStack = this.pageStack;
+                //pop当前页面
+                pageStack.pop();
+                //获取目标页面
+                let destination = pageStack.pop();
+                this.updatePageStack(pageStack);
+                this.$router.push(destination);   
+            }
         },
+        /**
+         * @func
+         * @desc 路由到用户详情
+         */
+        routeToUser() {
+            this.$router.push({
+                name: 'UnsplashUser',
+                params: {
+                    data: this.collectionData.user,
+                }
+            })
+        },
+        //map mutations
+        ...mapMutations({
+            updatePageStack: 'UPDATE_PAGESTACK'
+        })
     },
     beforeRouteEnter (to, from, next) {
         next(vm => {
+            //清除数据
+            vm.photosData = [];
+            vm.urlsOfPhotos = [];
+            vm.isAllDataLoaded = false;
+
             // 通过 `vm` 访问组件实例
             let data = vm.$route.params.data;
-
-            console.log(data);
 
             if (data) {
                 vm.collectionData = data;
@@ -217,10 +246,16 @@ export default {
         border-radius: 50%;
         width: 20px;
         height: 20px;
+        opacity: .8;
+        transition: all .2s;
 
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+    .backicon:hover {
+        opacity: 1;
+        background: red;
     }
 
     .collection-desc {
@@ -241,6 +276,14 @@ export default {
         .info {
             width: 100%;
             opacity: .8;
+
+            .userlink {
+                opacity: .4;
+            }
+            .userlink:hover {
+                opacity: .8;
+                text-decoration: underline;
+            }
         }
         .tags {
             width: 100%;
