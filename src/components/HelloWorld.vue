@@ -14,11 +14,11 @@ export default {
         //this.unsplash();
 
         //跨域
-        this.axios.get('/').then((res) => {
-            console.log(res);
-        }).catch((e) => {
-            console.log(e);
-        })
+        // this.axios.get('/').then((res) => {
+        //     console.log(res);
+        // }).catch((e) => {
+        //     console.log(e);
+        // })
         
     },
     data() {
