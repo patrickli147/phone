@@ -5,8 +5,8 @@
                 <div class="search-input">
                     <input 
                         @keyup="handleInputKeyup($event)"
-                        @focus="toggleInputFocused" 
-                        @blur="toggleInputFocused"
+                        @focus="toggleInputFocused(true)" 
+                        @blur="toggleInputFocused(false)"
                         type="text" 
                         placeholder="输入关键字搜索（推荐英文）" 
                         v-model="searchInput"
@@ -154,6 +154,7 @@
                     <div class="collections-item"
                         v-for="(item, index) in searchUsersUrls"
                         :key="index"
+                        @click="routeToUser(index)"
                     >
                         <div class="userinfo">
                             <div class="profile-img">
@@ -284,15 +285,19 @@ export default {
             
             if (key === "Enter" && this.searchInput.length > 0) {
                 //按下回车且搜索内容不为空时搜索
+
+                this.isInputFocused = false;
+
                 this.search();
             }
         },
         /**
          * @func
          * @desc 翻转isInputFocused
+         * @param {boolean} val 要设置的value
          */
-        toggleInputFocused() {
-            this.isInputFocused = !this.isInputFocused;
+        toggleInputFocused(val) {
+            this.isInputFocused = val;
         },
         /**
          * @func
@@ -499,6 +504,9 @@ export default {
                 if (data) {
                     let results = data.results;
 
+                    //隐藏加载中
+                    this.isCollectionsLoading = false;
+
                     this.totalCollections = data.total;
                     this.totalCollectionsPages = data.total_pages;
 
@@ -524,9 +532,6 @@ export default {
 
                         Promise.allSettled(promises)
                             .then(res1 => {
-                                //隐藏加载中
-                                this.isCollectionsLoading = false;
-
                                 //res is an array
                                 res1.forEach(val => {
                                     previewPhotosUrls.push(val.value);
@@ -561,6 +566,8 @@ export default {
                 let data = res && res.data;
                 if (data) {
                     let results = data.results;
+
+                    this.isUsersLoading = false;
 
                     this.totalUsers = data.total;
                     this.totalUsersPages = data.total_pages;
@@ -597,7 +604,6 @@ export default {
 
                         Promise.allSettled(promises)
                             .then(res => {
-                                this.isUsersLoading = false;
 
                                 res.forEach(val => {
                                     userPhotosUrls.push(val.value);
@@ -714,6 +720,20 @@ export default {
                 name: 'UnsplashCollection',
                 params: {
                     data: this.searchCollectionsData[index]
+                }
+            })
+        },
+        /**
+         * @func
+         * @desc 路由到用户详情
+         * @param {number} index 当前用户的index
+         */
+        routeToUser(index) {
+            this.$router.push({
+                name: 'UnsplashUser',
+                params: {
+                    data: this.searchUsersData[index],
+                    userImg: this.searchUsersUrls[index][0]
                 }
             })
         }

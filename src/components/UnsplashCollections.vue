@@ -29,7 +29,8 @@
                                 {{collectionsData[index].title}}
                             </div>
                             <div class="info">
-                                {{collectionsData[index].total_photos}} photos · Curated by {{collectionsData[index].user.username}}
+                                {{collectionsData[index].total_photos}} photos · Curated by <span class="userlink">{{collectionsData[index].user.username}}</span>
+                                
                             </div>
                             <div class="tags">
                                 <div 
@@ -152,8 +153,6 @@ export default {
                 url: 'https://api.unsplash.com/collections',
                 params: this.listCollectionsParams
             }).then(res => {
-                console.log(res);
-
                 let data = res && res.data;
                 if (data) {
                     this.collectionsData = [...this.collectionsData, ...data];
@@ -209,6 +208,7 @@ export default {
                 }
             })
         }
+
     },
     components: {
         Pagination
@@ -232,7 +232,7 @@ export default {
         .collections-item {
             width: 100%;
             border-bottom: 3px solid #eee;
-            padding: 5px 0;
+            padding-bottom: 10px;
 
             .preview-photos {
                 width: 100%;
@@ -284,6 +284,14 @@ export default {
                 .info {
                     width: 100%;
                     opacity: .8;
+
+                    .userlink {
+                        opacity: .4;
+                    }
+                    .userlink:hover {
+                        opacity: .8;
+                        text-decoration: underline;
+                    }
                 }
                 .tags {
                     width: 100%;

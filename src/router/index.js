@@ -18,6 +18,7 @@ import UnsplashSearch from '@/components/UnsplashSearch';
 import UnsplashCollections from '@/components/UnsplashCollections';
 import UnsplashPhoto from '@/components/UnsplashPhoto';
 import UnsplashCollection from '@/components/UnsplashCollection';
+import UnsplashUser from '@/components/UnsplashUser';
 
 
 Vue.use(Router)
@@ -115,9 +116,10 @@ const router =  new Router({
               component: UnsplashCollection
             },
             {
-              path: '/*',
-              component: UnsplashWelcome
-            }
+              path: 'user',
+              name: 'UnsplashUser',
+              component: UnsplashUser
+            },
           ]
         },
         {
