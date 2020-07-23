@@ -20,7 +20,12 @@
 
       <!-- dots 开始 -->
       <div class="dots">
-        <div v-for="(item, index) in apps" :key="index" :class="index === currentIndex ? 'dot-item current' : 'dot-item'">
+        <div 
+          v-for="(item, index) in apps" 
+          :key="index" 
+          :class="index === currentIndex ? 'dot-item current' : 'dot-item'"
+          @click="setCurrentIndex(index)"
+        >
 
         </div>
       </div>
@@ -86,11 +91,25 @@ export default {
         ],
         [
           {
-            name: '计算器',
+            name: '测试翻页用',
             path: '/phone/calculator',
             icon: calculatorIcon
           }
-        ]
+        ],
+        [
+          {
+            name: '测试翻页用',
+            path: '/phone/calendar',
+            icon: calendarIcon
+          }
+        ],
+        [
+          {
+            name: '测试翻页用',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          }
+        ],
       ],
       //bottom apps
       bottomApps:[
@@ -115,6 +134,10 @@ export default {
     //open app with given path
     openApp(path) {
       this.$router.push(path);
+    },
+    //setCurrentIndex
+    setCurrentIndex(index) {
+      this.currentIndex = index;
     }
   },
   computed: {
@@ -146,6 +169,9 @@ export default {
         position: absolute;
         width: 100%;
         //height: 100%;
+
+        //切换过度
+        transition: all 0.5s;
 
         display: flex;
         justify-content: flex-start;

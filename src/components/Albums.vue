@@ -219,12 +219,15 @@ export default {
                 return;
             }
 
-            //一旦出现了位移，则不视为点击
-            this.isScrollClick = false;
-
             let currentX = e.pageX;
             let currentOffset = this.startX - currentX;
             let deltaOffset = currentOffset - this.lastOffset;
+
+            //一旦位移大于5px，则不视为点击
+            if (Math.abs(currentOffset) > 5) {
+                this.isScrollClick = false;
+            }
+            
             
             if (deltaOffset + this.offset < 0) {
                 //越界
