@@ -28,11 +28,18 @@
 
 <script>
 import Topbar from '@/components/Topbar';
-import * as math from 'mathjs';
+// import * as math from 'mathjs';
+import { create, all } from 'mathjs'
 
 export default {
     mounted() {
-        
+        //create math instance
+        let config = ({
+            number: 'BigNumber',
+            precision: 64
+        });
+        this.math = create(all, config);
+
     },
     data() {
         return {
@@ -46,6 +53,8 @@ export default {
             maxLength: 8,
             //是否需要清除之前的output
             isClearNeeded: false,
+            //math.js instance
+            math: null
         }
     },
     methods: {
@@ -107,11 +116,16 @@ export default {
                         this.expresssion += buttonClicked;
                     }
                     else {
+                        if (this.output === '.') {
+                            //output只是一个小数点
+                            return;
+                        }
+
                         //不需要清理output
                         this.expresssion += this.output;
 
                         //计算output
-                        this.output = math.evaluate(this.format(this.expresssion));
+                        this.output = this.math.evaluate(this.format(this.expresssion));
 
                         this.expresssion += buttonClicked;
                         this.isClearNeeded = true;
@@ -121,13 +135,14 @@ export default {
 
             //处理等于
             if (buttonClicked === '=') {
-                if (!this.hasOperator(this.expresssion)) {
-                    //表达式里还不包含operator
+                console.log(this.expresssion);
+                if (!this.hasOperator(this.expresssion) || this.output === '.') {
+                    //表达式里还不包含operator || output只是一个小数点
                     return;
                 }
                 else {
                     this.expresssion += this.output;
-                    this.output = math.evaluate(this.format(this.expresssion));
+                    this.output = this.math.evaluate(this.format(this.expresssion));
                     //计算结束
                     this.expresssion = '';
                     this.isClearNeeded = true;
