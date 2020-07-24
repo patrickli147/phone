@@ -165,7 +165,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 div.power-off-modal {
-    $out-bg:rgb(150, 133, 133);
+    $out-bg:rgb(214, 207, 207);
     $out-opacity:0.5;
     width: 100%;
     height: 100%;
@@ -178,7 +178,7 @@ div.power-off-modal {
     align-items: center;
     flex-direction: column;
   div.power-off-slider {
-      border-radius: 5%;
+      border-radius: 5px;
       width: 210px;
       height: 8%;
       background-color: rgba(85, 85, 85, 0.479);

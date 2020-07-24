@@ -119,7 +119,7 @@ const router =  new Router({
               path: 'user',
               name: 'UnsplashUser',
               component: UnsplashUser
-            },
+            }
           ]
         },
         {

@@ -12,13 +12,10 @@
 
         <div class="screen-wrap">
             <div class="power-off-wrap">
-                <!-- <power-off-modal 
-                    @poweroffConfirmed="handlePoweroffConfirmed"
-                    @poweroffCanceled="handlePoweroffCanceled"
-                ></power-off-modal> -->
-                <router-view
-                >
-                </router-view>
+                <transition :name="isAppTransitionNeeded ? 'app-transition' : 'no'" mode="out-in">
+                    <router-view>
+                    </router-view>
+                </transition>
             </div>
         </div>
 
@@ -65,6 +62,16 @@ export default {
           date: null,
           //update time interval
           updateTimeInterval: null,
+          //need app-transition apps
+          needAppTransitions: [
+              '/phone/desktop',
+              '/phone/camera',
+              '/phone/albums',
+              '/phone/calculator',
+              '/phone/calendar',
+              '/phone/poem',
+              '/phone/unsapp/welcome',
+          ]
       }
   },
   methods: {
@@ -138,6 +145,11 @@ export default {
       minute() {
           return this.date.getMinutes() < 10 ? '0' + this.date.getMinutes() : this.date.getMinutes();
       },
+      //true: need app-transition
+      isAppTransitionNeeded() {
+          let path = this.$route.path;
+          return this.needAppTransitions.includes(path);
+      }
   },
   watch: {
       isPoweroffConfirmed() {
@@ -212,6 +224,16 @@ div.phone {
             .power-off-wrap {
                 width: 100%;
                 height: 100%;
+
+                //过渡动画
+                .app-transition-enter-active {
+                    transition: all .5s;
+                }
+                .app-transition-enter {
+                    transform: scale(0.1);
+                    transform-origin: 50% 10%;
+                    opacity: 0;
+                }
             }
         }
 
