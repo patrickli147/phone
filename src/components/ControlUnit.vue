@@ -46,6 +46,11 @@ export default {
       },
       //change the value of isLocked
       changeLockState() {
+          //已关机
+          if(this.isPoweredOff) {
+              return;
+          }
+
           //console.log("change lock state")
           if (this.isLocked) {
               //the phone is locked
