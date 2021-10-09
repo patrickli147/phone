@@ -10,7 +10,17 @@
           :key="index1"
           :style="`left:${350 * (index1 - currentIndex)}px;`"
         >
-          <div class="app-item" v-for="(item2, index2) in item1" :key="index2" @click="openApp(item2.path)">
+          <div
+            class="app-item"
+            :class="[
+              'app-item',
+              {
+                'app-item-shaking': isAppsShaking
+              }
+            ]"
+            v-for="(item2, index2) in item1" :key="index2"
+            @click="openApp(item2.path)"
+          >
             <img :src="item2.icon" alt="...">
             <p>{{item2.name}}</p>
           </div>
@@ -20,9 +30,9 @@
 
       <!-- dots 开始 -->
       <div class="dots">
-        <div 
-          v-for="(item, index) in apps" 
-          :key="index" 
+        <div
+          v-for="(item, index) in apps"
+          :key="index"
           :class="index === currentIndex ? 'dot-item current' : 'dot-item'"
           @click="setCurrentIndex(index)"
         >
@@ -126,6 +136,8 @@ export default {
           name: '设置'
         }
       ],
+      // is apps shaking
+      isAppsShaking: true,
       //current app page
       currentIndex: 0,
     }
@@ -141,7 +153,7 @@ export default {
     }
   },
   computed: {
-    
+
   },
   components: {
     Topbar
@@ -190,6 +202,10 @@ export default {
             font-size: 12px;
             font-weight: 520;
           }
+
+          &-shaking {
+            animation: shake .3s infinite;
+          }
         }
       }
     }
@@ -231,4 +247,30 @@ export default {
     }
   }
 }
+
+$shake-scale: 3deg;
+
+// animations
+@keyframes shake {
+  0% {
+    transform: rotateZ(0deg);
+  }
+
+  25% {
+    transform: rotateZ($shake-scale);
+  }
+
+  50% {
+    transform: rotateZ(0);
+  }
+
+  75% {
+    transform: rotateZ(-$shake-scale);
+  }
+
+  100% {
+    transform: rotateZ(0deg);
+  }
+}
+
 </style>

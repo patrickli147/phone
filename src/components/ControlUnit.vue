@@ -1,6 +1,6 @@
 <template>
   <div class="control-unit-wrap">
-    <Button icon="ios-arrow-forward" v-if="isCollapsed" @click="handleChangeCollapse"></Button>  
+    <Button icon="ios-arrow-forward" v-if="isCollapsed" @click="handleChangeCollapse"></Button>
     <ButtonGroup vertical v-else>
         <Button icon="ios-arrow-down" @click="handleChangeCollapse"></Button>
         <div
@@ -9,7 +9,7 @@
         >
           <Button icon="md-power"></Button>
         </div>
-        
+
         <Button icon="md-add"></Button>
         <Button icon="md-remove"></Button>
     </ButtonGroup>
@@ -25,7 +25,7 @@ export default {
     isPowerOffComfirmed: Boolean
   },
   mounted() {
-      
+
   },
   data() {
       return {
@@ -63,10 +63,10 @@ export default {
               else {
                   //request to unlock
                   this.setIsBlackScreen(true);
-              }              
+              }
           }
           else {
-              //lock the phone 
+              //lock the phone
               this.setIsBlackScreen(true);
               this.$router.push('/phone/locked');
           }
