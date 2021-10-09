@@ -1,12 +1,22 @@
 <template>
-    <div>
-        <img :src="uimg" alt="">
+    <div class="container">
+        <drop-zone class="dropZone">
+            <draggable-item
+                v-for="item in dragItems"
+                :key="item"
+                class="dragItem"
+            >
+                <li>{{item}}</li>
+            </draggable-item>
+        </drop-zone>
     </div>
 </template>
 
 <script>
 import Unsplash, { toJson } from "unsplash-js";
 
+import DropZone from '../components/common/draggable/DropZone.vue';
+import DraggableItem from '../components/common/draggable/DraggableItem.vue';
 
 export default {
     mounted() {
@@ -19,7 +29,7 @@ export default {
         // }).catch((e) => {
         //     console.log(e);
         // })
-        
+
     },
     data() {
         return {
@@ -32,7 +42,7 @@ export default {
                     city:"重庆"
                 }
             },
-            //url 
+            //url
             url: "https://tianqiapi.com/api",
             //another
             path: "https://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d",
@@ -43,8 +53,12 @@ export default {
             //test
             testUrl: 'https://i.picsum.photos/id/1050/1600/900.jpg',
             ano: 'https://picsum.photos/200/300',
-            dogApi: 'https://dog.ceo/api/breeds/image/random'
-
+            dogApi: 'https://dog.ceo/api/breeds/image/random',
+            dragItems: [
+                'a',
+                'b',
+                'c'
+            ]
         }
     },
     methods: {
@@ -53,10 +67,10 @@ export default {
             //     console.log(res);
             // });
             // this.axios.get(this.path).then((res) => {
-            //     c 
+            //     c
             // })
 
-                        
+
 
             /*
             this.axios.get('https://api.djapi.cn/wannianli/get?token=09ea075120bb237576097903e5d6b05d', {
@@ -66,7 +80,7 @@ export default {
             })
             */
 
-           
+
         },
         //comment
         comment() {
@@ -83,7 +97,7 @@ export default {
              * @param {object[]} g - 参数g为一个对象数组
              * @param {string} g.h - 参数g数组中一项的h属性
              * @param {string} g.i - 参数g数组中一项的i属性
-             * @param {string} [j] - 参数j是一个可选参数 
+             * @param {string} [j] - 参数j是一个可选参数
              * @returns {boolean} 返回值为true
              */
 
@@ -107,6 +121,10 @@ export default {
                     localStorage.setItem("tempData", JSON.stringify(res));
             });
         }
+    },
+    components: {
+        DropZone,
+        DraggableItem
     }
 }
 </script>
@@ -122,6 +140,32 @@ div {
     //chrome
     .to-hide::-webkit-scrollbar {
         display: none;
+    }
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dropZone {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 500px;
+    height: 500px;
+    border: 1px solid red;
+}
+
+.dragItem {
+    background: #eee;
+    width: 100px;
+
+    &:hover {
+        background: #ccc;
     }
 }
 </style>
