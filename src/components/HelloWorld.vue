@@ -1,13 +1,14 @@
 <template>
-    <div class="container">
-        <drop-zone class="dropZone">
-            <draggable-item
+    <div class="wrapper">
+        <drop-zone class="dropZone" :data="dragItems"
+        >
+            <div
                 v-for="item in dragItems"
                 :key="item"
                 class="dragItem"
             >
                 <li>{{item}}</li>
-            </draggable-item>
+            </div>
         </drop-zone>
     </div>
 </template>
@@ -16,7 +17,7 @@
 import Unsplash, { toJson } from "unsplash-js";
 
 import DropZone from '../components/common/draggable/DropZone.vue';
-import DraggableItem from '../components/common/draggable/DraggableItem.vue';
+// import DraggableItem from '../components/common/draggable/DraggableItem.vue';
 
 export default {
     mounted() {
@@ -57,7 +58,13 @@ export default {
             dragItems: [
                 'a',
                 'b',
-                'c'
+                'c',
+                'c',
+                'c',
+                'c',
+                'c',
+                'c',
+                'd'
             ]
         }
     },
@@ -123,8 +130,7 @@ export default {
         }
     },
     components: {
-        DropZone,
-        DraggableItem
+        DropZone
     }
 }
 </script>
@@ -143,18 +149,18 @@ div {
     }
 }
 
-.container {
+.wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .dropZone {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: column;
-    flex-wrap: wrap;
+    // display: flex;
+    // justify-content: flex-start;
+    // align-items: center;
+    // flex-direction: column;
+    // flex-wrap: wrap;
     width: 500px;
     height: 500px;
     border: 1px solid red;
@@ -162,7 +168,6 @@ div {
 
 .dragItem {
     background: #eee;
-    width: 100px;
 
     &:hover {
         background: #ccc;
