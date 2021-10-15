@@ -41,7 +41,7 @@
                   >
                     <div class="pincode">
                         <p>{{item}}</p>
-                    </div> 
+                    </div>
                   </div>
               </div>
               <div class="bottom-btn">
@@ -103,12 +103,12 @@ export default {
       this.updateTimeInterval = null;
   },
   created() {
-     this.date = new Date(); 
+     this.date = new Date();
   },
   mounted() {
     //set LOCK_STATE to true: lock the phone
     this.setLocked(true);
-    
+
     this.updateTimeInterval = this.updateTime();
 
     try {
@@ -125,7 +125,7 @@ export default {
       setIsBlackScreen:'SET_IS_BLACK_SCREEN',
       updatePageStack: 'UPDATE_PAGESTACK'
     }),
-    //update time 
+    //update time
     updateTime() {
         return setInterval(() => {
             this.date = new Date();
@@ -142,7 +142,7 @@ export default {
     },
     //check pincode
     checkPincode() {
-        
+
         if (this.pincodeInput === '000000') {
             //unlock when pincode is correct
             this.setLocked(false);
@@ -169,7 +169,7 @@ export default {
             this.pincodeInput = '';
         }
         else {
-            
+
             this.isPincodeWrong = true;
             setTimeout(() => {
                 this.isPincodeWrong = false;
@@ -185,7 +185,7 @@ export default {
     //请求农历数据
     async getLunarData() {
         let res = await this.axios.get(this.url);
-        
+
         if (res.data) {
             //处理接口返回的错误
             if (res.data.ErrorReason !== "no") {
@@ -213,7 +213,7 @@ export default {
           return this.date.getMinutes() < 10 ? '0' + this.date.getMinutes() : this.date.getMinutes();
       },
       month() {
-          return this.date.getMonth();
+          return this.date.getMonth() + 1;
       },
       day() {
           return this.date.getDate();
@@ -254,7 +254,7 @@ export default {
       height: 95%;
       width: 100%;
       position: relative;
-      
+
       .unlock-wallpaper {
           .date-wrap {
             padding-top: 10%;
@@ -277,7 +277,7 @@ export default {
             margin: auto;
         }
       }
-        
+
       .unlock-pincode {
           height: 100%;
           background-color: rgba(141, 137, 137, 0.233);
@@ -347,7 +347,7 @@ export default {
                       background-color: rgba(131, 116, 116, 0.555);
                   }
               }
-              
+
           }
           .bottom-btn {
               display: flex;
@@ -364,7 +364,7 @@ export default {
               }
           }
       }
-      
+
   }
 }
 </style>
