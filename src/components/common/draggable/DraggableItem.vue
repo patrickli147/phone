@@ -62,7 +62,8 @@ export default {
             }
             this.setOffset(e.clientX - this.startX, e.clientY - this.startY);
         }, 100),
-        onDragEnd() {
+        onDragEnd(e) {
+            e.preventDefault();
             console.log('drag end');
             // console.log(e);
             this.isDragging = false;
@@ -87,20 +88,34 @@ export default {
         ySteps() {
             return Math.floor(this.offsetY / this.config.height);
         },
-        indexes() {
-            return {
-                x: this.xSteps,
-                y: this.ySteps
+        newIndex() {
+            const {columns, maxIndex} = this.config;
+            const delta = this.xSteps + this.ySteps * columns;
+            let newIndex = this.config.index + delta;
+            if (newIndex < 0) {
+                newIndex = 0;
             }
+            if (newIndex > maxIndex) {
+                newIndex = maxIndex;
+            }
+            return newIndex;
         }
     },
     mounted() {
         // console.log(this.$props);
     },
+    updated() {
+        // console.log('config is');
+        // console.log(this.config);
+    },
     watch: {
-        indexes(newValue) {
-            console.log('changed');
-            this.$emit('indexchange', newValue);
+        newIndex(newValue, oldValue) {
+            if (newValue === oldValue) {
+                console.log('tm yiyandeya');
+                return;
+            }
+            console.log('drag item changed', newValue);
+            this.$emit('indexchange', {newIndex: newValue, index: this.config.index});
         }
     }
 }
@@ -109,7 +124,7 @@ export default {
 <style lang="scss" scoped>
 .dragging {
     //transform: translateX(-10px) !important;
-    opacity: 0;
+    // opacity: 0;
 }
 
 </style>

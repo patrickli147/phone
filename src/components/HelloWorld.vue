@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <drop-zone class="dropZone" :data="dragItems"
+        <drop-zone class="dropZone" :items="dragItems"
         >
             <div
                 v-for="item in dragItems"
@@ -56,15 +56,15 @@ export default {
             ano: 'https://picsum.photos/200/300',
             dogApi: 'https://dog.ceo/api/breeds/image/random',
             dragItems: [
-                'a',
-                'b',
-                'c',
-                'c',
-                'c',
-                'c',
-                'c',
-                'c',
-                'd'
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9'
             ]
         }
     },
