@@ -104,7 +104,7 @@ export default {
           setIsUnlockRequested: 'SET_IS_UNLOCK_REQUESTED',
           setIsBlackScreen:'SET_IS_BLACK_SCREEN'
       }),
-      //update time 
+      //update time
       updateTime() {
           return setInterval(() => {
               this.date = new Date();
@@ -154,9 +154,9 @@ export default {
   watch: {
       isPoweroffConfirmed() {
           if (this.isPoweroffConfirmed) {
-              //power off 
+              //power off
             this.powerOff();
-          }   
+          }
       }
   }
 }
@@ -175,7 +175,7 @@ div.phone {
         height: 600px;
         width: 350px;
         border: 5px solid black;
-        border-radius: 15px;
+        border-radius: 30px;
         background-color: #111;
 
         display: flex;
@@ -185,7 +185,7 @@ div.phone {
 
         div.top-wrap {
             width: 100%;
-            height: 10%;            
+            height: 10%;
 
             display: flex;
             justify-content: flex-start;
@@ -196,7 +196,7 @@ div.phone {
                 justify-content: flex-end;
 
                 div.sensor-bg {
-                    background-color: orange;
+                    background-color: #0051ffb0;
                     width: 2%;
                     height: 0;
                     padding-bottom: 2%;
@@ -204,9 +204,9 @@ div.phone {
                     border-radius: 50%;
                 }
             }
-            
+
             div.audio {
-                background-color: pink;
+                background-color: #444;
                 width: 15%;
                 height: 5%;
                 border-radius: 5%;
@@ -219,7 +219,7 @@ div.phone {
             height: 80%;
             width: 100%;
 
-            
+
 
             .power-off-wrap {
                 width: 100%;
@@ -245,7 +245,8 @@ div.phone {
             justify-content: center;
             align-items: center;
             div.home-icon {
-                background-color: yellow;
+                background-color: #000;
+                box-shadow: 0 0 3px #999;
                 width: 13%;
                 height: 0;
                 padding-bottom: 13%;
