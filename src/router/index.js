@@ -19,6 +19,7 @@ import UnsplashCollections from '@/components/UnsplashCollections';
 import UnsplashPhoto from '@/components/UnsplashPhoto';
 import UnsplashCollection from '@/components/UnsplashCollection';
 import UnsplashUser from '@/components/UnsplashUser';
+import Gear from '@/components/gear/Gear'
 
 
 Vue.use(Router)
@@ -34,6 +35,11 @@ const router =  new Router({
           path: 'poweroffmodal',
           name: 'PowerOffModal',
           component: PowerOffModal
+        },
+        {
+          path: 'settings',
+          name: 'Settings',
+          component: Gear
         },
         {
           path: 'poweroff',
@@ -140,10 +146,10 @@ router.beforeEach((to, from, next) => {
   //获取pageStack信息,并添加路由记录
   let pageStack = router.app.$options.store.getters.pageStack;
   pageStack.push(to.path);
-  
+
   //更新pageStack
   router.app.$options.store.commit('UPDATE_PAGESTACK', pageStack);
-  
+
   next();
 });
 

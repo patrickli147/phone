@@ -67,6 +67,8 @@ import calculatorIcon from '@/assets/animated_icons_calculator.svg';
 import calendarIcon from '@/assets/animated_icons_calendar.svg';
 import poemgameIcon from '@/assets/animated_icons-_poemgame.svg';
 import unsIcon from '@/assets/uns.png';
+import gearIcon from '@/assets/gear.png';
+
 import DropZone from './common/draggable/DropZone.vue';
 
 export default {
@@ -105,6 +107,11 @@ export default {
             name: 'uns',
             path: '/phone/unsapp/welcome',
             icon: unsIcon
+          },
+          {
+            name: '设置',
+            path: '/phone/settings',
+            icon: gearIcon
           }
         ],
         [
