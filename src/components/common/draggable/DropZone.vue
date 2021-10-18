@@ -68,20 +68,10 @@ export default {
             const {newIndex, index} = e;
             const currentItem = this.originIndexes[index];
 
-            // this.data.splice(index, 1);
-            // this.data.splice(newIndex, 0, currentItem);
-            // infinite loop
-
             const currentItems = [...this.originIndexes];
             currentItems.splice(index, 1);
             currentItems.splice(newIndex, 0, currentItem);
-            // this.indexes = [...currentItems];
             this.newIndexes = [...currentItems];
-
-            // this.$forceUpdate();
-
-            console.log(newIndex);
-            console.log(this.indexes);
 
             this.computeLayout(newIndex, index);
         },
@@ -120,7 +110,6 @@ export default {
             }
 
             this.styles = [...newStyles];
-            console.log(this.styles);
         },
         initStyles() {
             this.styles = Array(this.indexes.length).fill('');
@@ -146,7 +135,6 @@ export default {
             >
                 {this.indexes.map((item, index) => {
                     const itemConfig = Object.assign({}, basicItemConfig, {index});
-                    // console.log('%c rendering %d', 'color: red;', index);
                     return (
                         <DraggableItem
                             onIndexchange={this.onIndexChange}
