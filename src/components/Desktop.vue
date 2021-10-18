@@ -10,20 +10,27 @@
           :key="index1"
           :style="`left:${350 * (index1 - currentIndex)}px;`"
         >
-          <div
-            class="app-item"
-            :class="[
-              'app-item',
-              {
-                'app-item-shaking': isAppsShaking
-              }
-            ]"
-            v-for="(item2, index2) in item1" :key="index2"
-            @click="openApp(item2.path)"
+          <drop-zone
+            :itemWidth="42"
+            :itemHeight="66"
+            :rowGap="20"
+            :columnGap="40"
           >
-            <img :src="item2.icon" alt="...">
-            <p>{{item2.name}}</p>
-          </div>
+            <div
+              class="app-item"
+              :class="[
+                'app-item',
+                {
+                  'app-item-shaking': isAppsShaking
+                }
+              ]"
+              v-for="(item2, index2) in item1" :key="index2"
+              @click="openApp(item2.path)"
+            >
+              <img :src="item2.icon" alt="...">
+              <p>{{item2.name}}</p>
+            </div>
+          </drop-zone>
         </div>
       </div>
       <!-- app 结束 -->
@@ -60,6 +67,7 @@ import calculatorIcon from '@/assets/animated_icons_calculator.svg';
 import calendarIcon from '@/assets/animated_icons_calendar.svg';
 import poemgameIcon from '@/assets/animated_icons-_poemgame.svg';
 import unsIcon from '@/assets/uns.png';
+import DropZone from './common/draggable/DropZone.vue';
 
 export default {
   name: 'Desktop',
@@ -137,7 +145,7 @@ export default {
         }
       ],
       // is apps shaking
-      isAppsShaking: true,
+      isAppsShaking: false,
       //current app page
       currentIndex: 0,
     }
@@ -156,7 +164,8 @@ export default {
 
   },
   components: {
-    Topbar
+    Topbar,
+    DropZone
   }
 }
 </script>
@@ -186,11 +195,11 @@ export default {
         transition: all 0.5s;
 
         display: flex;
-        justify-content: flex-start;
-        align-items: flex-start;
+        justify-content: center;
+        align-items: center;
         flex-wrap: wrap;
         .app-item {
-          width: 25%;
+          // width: 25%;
           //height: 16.67%;
 
           img {

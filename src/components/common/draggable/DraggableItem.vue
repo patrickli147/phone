@@ -1,9 +1,11 @@
 <template>
     <div
         @dragstart="onDragStart"
-        @drag="onDrag"
-        @dragend="onDragEnd"
-        draggable="true"
+        @mousedown="onMousedown"
+        @mousemove="onMousemove"
+        @mouseup="onMouseup"
+        @mouseleave="onMouseleave"
+        @click.capture="onItemClick"
         :class="[{'dragging': isDragging}]"
         :style="dragItemStyle"
     >
@@ -33,18 +35,24 @@ export default {
             // start x position
             startX: 0,
             // start y position
-            startY: 0
+            startY: 0,
+            // is click event
+            isClick: false
         }
     },
     methods: {
         onDragStart(e) {
-            console.log('drag start');
-            // this.isDragging = true;
+            e.preventDefault();
+        },
+        onMousedown(e) {
             this.isDragStarted = true;
             this.startX = e.clientX;
             this.startY = e.clientY;
+            this.isClick = true;
+
+            this.$emit('itemDragStart');
         },
-        onDrag: _throttle(function(e) {
+        onMousemove: _throttle(function(e) {
             if (!this.isDragStarted) {
                 // this will be called after the dragend event due to _throttle
                 return;
@@ -54,26 +62,49 @@ export default {
                 // set true when onDrag fires, not dragStart
                 this.isDragging = true;
             }
-            // console.log(e);
+
             if (e.clientX === 0 && e.clientY == 0) {
                 // before drag end
                 this.setOffset(0, 0);
                 return;
             }
-            this.setOffset(e.clientX - this.startX, e.clientY - this.startY);
-        }, 100),
-        onDragEnd(e) {
-            e.preventDefault();
-            console.log('drag end');
-            // console.log(e);
+
+            const deltaX = e.clientX - this.startX;
+            const deltaY = e.clientY - this.startY;
+
+            // minus delta to be a click
+            const MINUS_CLICK_DELTA = 2;
+
+            if (this.isClick && (Math.abs(deltaX > MINUS_CLICK_DELTA)
+                || Math.abs(deltaY > MINUS_CLICK_DELTA))) {
+                this.isClick = false;
+            }
+
+            this.setOffset(deltaX, deltaY);
+        }, 1),
+        onMouseup() {
             this.isDragging = false;
             this.isDragStarted = false;
 
             this.setOffset(0, 0);
+            this.$emit('itemDragEnd');
+        },
+        onMouseleave() {
+            if (!this.isDragging) {
+                return;
+            }
+
+            this.onMouseup();
         },
         setOffset(x, y) {
             this.offsetX = x;
             this.offsetY = y;
+        },
+        onItemClick(e) {
+            if (!this.isClick) {
+                // stop click on capture
+                e.stopPropagation();
+            }
         }
     },
     computed: {
@@ -83,14 +114,17 @@ export default {
             }
         },
         xSteps() {
-            return Math.floor(this.offsetX / this.config.width);
+            const result = this.offsetX / (this.config.width + this.config.columnGap);
+            return result > 0 ? Math.floor(result) : Math.ceil(result);
         },
         ySteps() {
-            return Math.floor(this.offsetY / this.config.height);
+            const result = this.offsetY / (this.config.height + this.config.rowGap);
+            return result > 0 ? Math.floor(result) : Math.ceil(result);
         },
         newIndex() {
             const {columns, maxIndex} = this.config;
             const delta = this.xSteps + this.ySteps * columns;
+
             let newIndex = this.config.index + delta;
             if (newIndex < 0) {
                 newIndex = 0;
@@ -101,20 +135,16 @@ export default {
             return newIndex;
         }
     },
-    mounted() {
-        // console.log(this.$props);
-    },
-    updated() {
-        // console.log('config is');
-        // console.log(this.config);
-    },
     watch: {
         newIndex(newValue, oldValue) {
-            if (newValue === oldValue) {
-                console.log('tm yiyandeya');
+            if (!this.isDragStarted || !this.isDragging) {
+                // _throttle
                 return;
             }
-            console.log('drag item changed', newValue);
+            if (newValue === oldValue) {
+                return;
+            }
+
             this.$emit('indexchange', {newIndex: newValue, index: this.config.index});
         }
     }
@@ -123,8 +153,11 @@ export default {
 
 <style lang="scss" scoped>
 .dragging {
-    //transform: translateX(-10px) !important;
-    // opacity: 0;
-}
+    // dragging item should have higher z-index, or a mouseleave event will be triggeed when moving mouse
+    // into another item
+    z-index: 10;
 
+    // transition is set in DropZone
+    transition: none !important;
+}
 </style>

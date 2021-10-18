@@ -4,12 +4,6 @@ import DraggableItem from './DraggableItem.vue';
 export default {
     name: 'drop-zone',
     props: {
-        // all items
-        items: {
-            type: Array,
-            default: new Array(0),
-            required: true
-        },
         // width of each grid-item
         itemWidth: {
             type: Number,
@@ -52,56 +46,84 @@ export default {
             data: this.items,
             // indexes of items
             indexes: [],
-            counter: 300
+            // indexes backup
+            originIndexes: [],
+            // new indexes
+            newIndexes: [],
+            // is click event
+            isClick: false,
+            // styles(translate) of each item
+            styles: [],
+            // is dragging
+            isDragging: false
         }
     },
     methods: {
-        onDrop(e) {
-            // 取消默认拖拽
-            e.preventDefault();
-
-            console.log('drop');
-        },
-        onDragEnter() {
-            // console.log('drag enter');
-        },
-        onDragOver(e) {
-            // console.log('drag over');
-            e.preventDefault();
-        },
-        onDragLeave() {
-            // console.log('drag leave');
-            // TODO:限制在内部
+        onItemDragEnd() {
+            this.isDragging = false;
+            this.initStyles();
+            this.indexes = [...this.newIndexes];
         },
         onIndexChange(e) {
-            console.log('couter: ' + this.counter);
-            if (this.counter > 0) {
-                this.counter = this.counter - 1;
-            }
-            else {
-                return;
-            }
-
-            console.log(e);
             const {newIndex, index} = e;
-            const currentItem = this.indexes[index];
+            const currentItem = this.originIndexes[index];
 
             // this.data.splice(index, 1);
             // this.data.splice(newIndex, 0, currentItem);
             // infinite loop
 
-            const currentItems = [...this.indexes];
+            const currentItems = [...this.originIndexes];
             currentItems.splice(index, 1);
             currentItems.splice(newIndex, 0, currentItem);
-            this.indexes = [...currentItems];
+            // this.indexes = [...currentItems];
+            this.newIndexes = [...currentItems];
 
             // this.$forceUpdate();
 
             console.log(newIndex);
             console.log(this.indexes);
+
+            this.computeLayout(newIndex, index);
         },
-        onClick() {
-            console.log('click');
+        onItemDragStart() {
+            this.isDragging = true;
+            this.originIndexes = [...this.indexes];
+            this.newIndexes = [...this.indexes];
+            this.isClick = true;
+        },
+        computeLayout(newIndex, oldIndex) {
+            const {columns, indexes, itemWidth, itemHeight, rowGap, columnGap} = this;
+            const newStyles = Array(indexes.length).fill('');
+            if (newIndex > oldIndex) {
+                for (let i = oldIndex + 1; i <= newIndex; i ++) {
+                    if ((i + 1) % columns === 1) {
+                        const translateX = (columns - 1) * (columnGap + itemWidth);
+                        const translateY = -(rowGap + itemHeight);
+                        newStyles[i] = `transform: translate(${translateX}px, ${translateY}px)`;
+                    }
+                    else {
+                        newStyles[i] = `transform: translateX(${-(columnGap + itemWidth)}px)`;
+                    }
+                }
+            }
+            else {
+                for (let i = newIndex; i < oldIndex; i ++) {
+                    if ((i + 1) % columns === 0) {
+                        const translateX = -(columns - 1) * (columnGap + itemWidth);
+                        const translateY = rowGap + itemHeight;
+                        newStyles[i] = `transform: translate(${translateX}px, ${translateY}px)`;
+                    }
+                    else {
+                        newStyles[i] = `transform: translateX(${columnGap + itemWidth}px)`;
+                    }
+                }
+            }
+
+            this.styles = [...newStyles];
+            console.log(this.styles);
+        },
+        initStyles() {
+            this.styles = Array(this.indexes.length).fill('');
         }
     },
     components: {
@@ -111,6 +133,8 @@ export default {
         const basicItemConfig = {
             width: this.itemWidth,
             height: this.itemHeight,
+            columnGap: this.columnGap,
+            rowGap: this.rowGap,
             columns: this.columns,
             maxIndex: this.indexes.length - 1
         }
@@ -118,18 +142,20 @@ export default {
         return (
             <div
                 class="container"
-                onDrop={() => {console.log('drop');}}
-                onDragenter={this.onDragEnter}
-                onDragover={this.onDragOver}
-                onDragleave={this.onDragLeave}
-                onClick={this.onClick}
                 style={this.style}
             >
                 {this.indexes.map((item, index) => {
                     const itemConfig = Object.assign({}, basicItemConfig, {index});
-                    console.log('%c rendering', 'color: red;');
+                    // console.log('%c rendering %d', 'color: red;', index);
                     return (
-                        <DraggableItem onIndexchange={this.onIndexChange} config={itemConfig}>
+                        <DraggableItem
+                            onIndexchange={this.onIndexChange}
+                            onItemDragStart={this.onItemDragStart}
+                            onItemDragEnd={this.onItemDragEnd}
+                            config={itemConfig}
+                            style={this.styles[index]}
+                            class={[{'dragging-item': this.isDragging}]}
+                        >
                             {this.$slots.default[item]}
                         </DraggableItem>
                     );
@@ -139,7 +165,7 @@ export default {
     },
     mounted() {
         this.indexes = this.$slots.default.map((value, index) => index);
-        console.log('xxx1 ', this.indexes);
+        this.initStyles();
     },
     computed: {
         style() {
@@ -163,6 +189,10 @@ export default {
     gap: 50px;
     place-items: center;
     place-content: center;
+}
+
+.dragging-item {
+    transition: all .5s;
 }
 
 </style>

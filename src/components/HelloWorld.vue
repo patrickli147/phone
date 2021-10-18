@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <drop-zone class="dropZone" :items="dragItems"
+        <drop-zone class="dropZone"
         >
             <div
                 v-for="item in dragItems"
