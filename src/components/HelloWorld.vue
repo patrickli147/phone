@@ -1,22 +1,12 @@
 <template>
     <div class="wrapper">
-        <drop-zone class="dropZone"
-        >
-            <div
-                v-for="item in dragItems"
-                :key="item"
-                class="dragItem"
-            >
-                <li>{{item}}</li>
-            </div>
-        </drop-zone>
+
     </div>
 </template>
 
 <script>
 import Unsplash, { toJson } from "unsplash-js";
 
-import DropZone from '../components/common/draggable/DropZone.vue';
 // import DraggableItem from '../components/common/draggable/DraggableItem.vue';
 
 export default {
@@ -54,18 +44,7 @@ export default {
             //test
             testUrl: 'https://i.picsum.photos/id/1050/1600/900.jpg',
             ano: 'https://picsum.photos/200/300',
-            dogApi: 'https://dog.ceo/api/breeds/image/random',
-            dragItems: [
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-                '6',
-                '7',
-                '8',
-                '9'
-            ]
+            dogApi: 'https://dog.ceo/api/breeds/image/random'
         }
     },
     methods: {
@@ -130,7 +109,6 @@ export default {
         }
     },
     components: {
-        DropZone
     }
 }
 </script>
@@ -146,31 +124,6 @@ div {
     //chrome
     .to-hide::-webkit-scrollbar {
         display: none;
-    }
-}
-
-.wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.dropZone {
-    // display: flex;
-    // justify-content: flex-start;
-    // align-items: center;
-    // flex-direction: column;
-    // flex-wrap: wrap;
-    width: 500px;
-    height: 500px;
-    border: 1px solid red;
-}
-
-.dragItem {
-    background: #eee;
-
-    &:hover {
-        background: #ccc;
     }
 }
 </style>
