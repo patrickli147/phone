@@ -114,11 +114,20 @@ export default {
             }
         },
         xSteps() {
-            const result = this.offsetX / (this.config.width + this.config.columnGap);
+            // add half of the item height
+            // when passed half of the item
+            const offsetX = (this.offsetX > 0)
+                ? (this.offsetX + this.config.width / 2)
+                : (this.offsetX - this.config.width / 2);
+            const result = offsetX / (this.config.width + this.config.columnGap);
             return result > 0 ? Math.floor(result) : Math.ceil(result);
         },
         ySteps() {
-            const result = this.offsetY / (this.config.height + this.config.rowGap);
+            // add half of the item height
+            const offsetY = (this.offsetY > 0)
+                ? (this.offsetY + this.config.height / 2)
+                : (this.offsetY - this.config.height / 2);
+            const result = offsetY / (this.config.height + this.config.rowGap);
             return result > 0 ? Math.floor(result) : Math.ceil(result);
         },
         newIndex() {
