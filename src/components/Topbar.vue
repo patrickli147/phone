@@ -1,9 +1,9 @@
 <template>
-    <div class="top" v-if="!isBlackScreen">
+    <div class="top" v-if="!isBlackScreen" :style="topBarStyle">
         <div class="top-left">
             <div class="signal">
                 <img v-if="isColorBlack" src="../assets/signal.png" alt="...">
-                <img v-else="" src="../assets/signal-black.png" alt="...">
+                <img v-else src="../assets/signal-black.png" alt="...">
             </div>
             <div class="runner">
                 运营商
@@ -13,7 +13,7 @@
                 <img v-else src="../assets/wifi-black.png" alt="...">
             </div>
         </div>
-        
+
         <div class="lockicon" v-if="isLocked">
             <img src="../assets/lock.png" alt="...">
         </div>
@@ -33,7 +33,8 @@ import {mapGetters} from 'vuex'
 export default {
   name: 'top',
   props: {
-     isBlack: Boolean
+     isBlack: Boolean,
+     topBarStyle: Object
   },
   created() {
       this.date = new Date();
@@ -43,7 +44,7 @@ export default {
     this.updateTimeInterval = this.updateTime();
   },
   methods: {
-      //update time 
+      //update time
       updateTime() {
           return setInterval(() => {
               this.date = new Date();
@@ -125,7 +126,7 @@ export default {
         display: flex;
         justify-content: flex-end;
     }
-}  
+}
 
 .blackscreened {
     background-color: #000;

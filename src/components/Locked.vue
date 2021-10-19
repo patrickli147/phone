@@ -1,6 +1,6 @@
 <template>
   <div class="locked">
-      <topbar :isBlack="(!'')"></topbar>
+      <topbar :isBlack="true" :topBarStyle="topBarStyle"></topbar>
       <div class="unlock" v-if="!isBlackScreen">
           <div class="unlock-wallpaper" v-if="!isUnlockRequested">
               <div class="date-wrap">
@@ -180,6 +180,7 @@ export default {
     },
     //handleCancelUnlock
     handleCancelUnlock() {
+        this.pincodeInput = '';
         this.setIsUnlockRequested(false);
     },
     //请求农历数据
@@ -223,6 +224,11 @@ export default {
       },
       numOfInput() {
           return this.pincodeInput.length;
+      },
+      topBarStyle() {
+        return this.isUnlockRequested
+          ? {background: 'rgba(11, 6, 22, 0.7)'}
+          : {};
       }
   },
   components: {
@@ -280,7 +286,7 @@ export default {
 
       .unlock-pincode {
           height: 100%;
-          background-color: rgba(141, 137, 137, 0.233);
+          background-color: rgba(11, 6, 22, 0.7);
           padding-top: 15%;
           .toast {
               font-size: 20px;
@@ -333,18 +339,19 @@ export default {
                     width: 60px;
                     height: 60px;
                     border-radius: 50%;
-                    background-color: rgba(131, 116, 116, 0.418);
+                    background-color: rgb(123 119 119 / 55%);
 
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     p {
-                        font-size: 20px;
+                        font-size: 25px;
+                        font-weight: 500;
                     }
                   }
                   .pincode:hover {
                       transform: translate(1.05);
-                      background-color: rgba(131, 116, 116, 0.555);
+                      background-color: rgb(123 119 119 / 75%);
                   }
               }
 
