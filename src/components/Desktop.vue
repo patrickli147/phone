@@ -104,6 +104,41 @@ export default {
             icon: poemgameIcon
           },
           {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          },
+          {
             name: 'uns',
             path: '/phone/unsapp/welcome',
             icon: unsIcon
