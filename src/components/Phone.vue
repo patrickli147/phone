@@ -279,6 +279,8 @@ div.phone {
         position: relative;
         transform-style: preserve-3d;
 
+        box-shadow: 0 0 5px #fff;
+
         display: flex;
         justify-content: center;
         align-items: center;
@@ -297,7 +299,8 @@ div.phone {
                 justify-content: flex-end;
 
                 div.sensor-bg {
-                    background-color: #0051ffb0;
+                    background: #203258b0;
+                    box-shadow: 0 0 1px #fff;
                     width: 2%;
                     height: 0;
                     padding-bottom: 2%;
@@ -310,7 +313,7 @@ div.phone {
                 background-color: #444;
                 width: 15%;
                 height: 5%;
-                border-radius: 5%;
+                border-radius: 5px;
             }
         }
 
@@ -417,6 +420,7 @@ div.phone {
 
         .last-back {
             background: var(--main-color);
+            box-shadow: 0 0 5px #fff;
         }
     }
     .powerOffAnimation {
