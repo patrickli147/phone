@@ -1,6 +1,9 @@
 <template>
-  <div class="phone">
-    <div class="phone-wrap">
+  <div class="phone" @mousemove="onMousemove">
+    <div
+        class="phone-wrap"
+        :style="rotateStyle"
+    >
         <div class="top-wrap">
             <div class="sensor">
                 <div class="sensor-bg"></div>
@@ -22,6 +25,12 @@
         <div class="home-wrap">
             <div class="home-icon" @click="handleHomeClicked"></div>
         </div>
+
+        <div class="phone-piece left-side"></div>
+        <div class="phone-piece right-side"></div>
+        <div class="phone-piece top-side"></div>
+        <div class="phone-piece bottom-side"></div>
+        <div class="phone-piece back"></div>
     </div>
     <div class="control-unit-wrap">
         <control-unit
@@ -35,7 +44,7 @@
 <script>
 import ControlUnit from './ControlUnit'
 import {mapGetters,mapMutations} from 'vuex'
-
+import _throttle from '../utils/throttle';
 
 export default {
   name: 'Phone',
@@ -71,7 +80,13 @@ export default {
               '/phone/calendar',
               '/phone/poem',
               '/phone/unsapp/welcome',
-          ]
+          ],
+          rotateData: {
+              x: 1,
+              y: 1,
+              z: 0,
+              degree: 45
+          }
       }
   },
   methods: {
@@ -130,7 +145,11 @@ export default {
               //back to desktop
               this.$router.push('/phone/desktop');
           }
-      }
+      },
+      onMousemove: _throttle(function(e) {
+          const {clientX} = e;
+          this.rotateData.degree = clientX;
+      }, 1)
   },
   computed: {
       ...mapGetters([
@@ -149,6 +168,12 @@ export default {
       isAppTransitionNeeded() {
           let path = this.$route.path;
           return this.needAppTransitions.includes(path);
+      },
+      rotateStyle() {
+          const {x, y, z, degree} = this.rotateData;
+          return {
+              transform: `rotate3d(${x}, ${y}, ${z}, ${degree}deg)`
+          }
       }
   },
   watch: {
@@ -170,6 +195,15 @@ div.phone {
     align-items: flex-start;
     color: white;
 
+    --main-color: #000;
+    --phone-x: 350px;
+    --phone-y: 600px;
+    --phone-z: 20px;
+    --border-width: 5px;
+    --border-radius-front: 30px;
+
+    box-sizing: content-box;
+
     div.phone-wrap {
         align-self: center;
         height: 600px;
@@ -177,6 +211,8 @@ div.phone {
         border: 5px solid black;
         border-radius: 30px;
         background-color: #111;
+        position: relative;
+        transform-style: preserve-3d;
 
         display: flex;
         justify-content: center;
@@ -252,6 +288,66 @@ div.phone {
                 padding-bottom: 13%;
                 border-radius: 50%;
             }
+        }
+
+        .phone-piece {
+            --main-color: red;
+            background: var(--main-color);
+            // border: 5px solid black;
+        }
+
+        .left-side {
+            position: absolute;
+            width: var(--phone-z);
+            height: var(--phone-y);
+            left: calc(-1 * var(--border-width));
+            transform: rotateY(90deg);
+            transform-origin: top left;
+
+            background: blue;
+        }
+
+        .right-side {
+            position: absolute;
+            width: var(--phone-z);
+            height: var(--phone-y);
+            right: calc(-1 * var(--border-width));
+            transform: rotateY(-90deg);
+            transform-origin: top right;
+
+            background: green;
+        }
+
+        .top-side {
+            position: absolute;
+            width: var(--phone-x);
+            height: var(--phone-z);
+            top: calc(-1 * var(--border-width));
+            transform: rotateX(-90deg);
+            transform-origin: top center;
+
+            background: pink;
+        }
+
+        .bottom-side {
+            position: absolute;
+            width: var(--phone-x);
+            height: var(--phone-z);
+            bottom: calc(-1 * var(--border-width));
+            transform: rotateX(90deg);
+            transform-origin: bottom center;
+
+            background: orange;
+        }
+
+        .back {
+            position: absolute;
+            width: var(--phone-x);
+            height: var(--phone-y);
+            transform: translateZ(-20px);
+            border-radius: var(--border-radius-front);
+
+            background: purple;
         }
     }
     .powerOffAnimation {
