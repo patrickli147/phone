@@ -55,6 +55,9 @@
             ></div>
         </div>
 
+        <div class="mics-wrap charger">
+        </div>
+
         <div class="mics-wrap right-mics">
             <div
                 class="mics"
@@ -477,7 +480,7 @@ div.phone {
 }
 
 .mics-wrap {
-    --mics-radius: 10px;
+    --mics-radius: 7px;
     position: absolute;
     bottom: calc(-1 * var(--border-width));
     transform: rotateX(91deg) translateY(calc(-1 * var(--phone-z) / 4));
@@ -501,6 +504,13 @@ div.phone {
 
 .right-mics {
     right: 45px;
+}
+
+.charger {
+    width: 30px;
+    height: 10px;
+    background: var(--color-black);
+    border-radius: 5px;
 }
 
 .left-side-detail {
