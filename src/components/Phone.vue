@@ -26,11 +26,56 @@
             <div class="home-icon" @click="handleHomeClicked"></div>
         </div>
 
-        <div class="phone-piece left-side"></div>
-        <div class="phone-piece right-side"></div>
-        <div class="phone-piece top-side"></div>
-        <div class="phone-piece bottom-side"></div>
-        <div class="phone-piece back"></div>
+        <!-- used for side view -->
+        <div v-show="isSideViewShown" class="phone-piece left-side"></div>
+        <div v-show="isSideViewShown" class="phone-piece right-side"></div>
+        <div v-show="isSideViewShown" class="phone-piece top-side"></div>
+        <div v-show="isSideViewShown" class="phone-piece bottom-side"></div>
+
+        <div
+            :class="['phone-piece', 'back', {'last-back': count === backNum}]"
+            v-for="count in backNum"
+            :key="count"
+            :style="`transform: translateZ(-${count/ (backNum / basicSides)}px)`"
+        ></div>
+
+        <div class="back-camera-wrap">
+            <div class="flash"></div>
+            <div class="camera-container">
+                <div class="camera"></div>
+                <div class="camera"></div>
+            </div>
+        </div>
+
+        <div class="mics-wrap left-mics">
+            <div
+                class="mics"
+                v-for="count in numOfBottomMicrophone"
+                :key="count"
+            ></div>
+        </div>
+
+        <div class="mics-wrap right-mics">
+            <div
+                class="mics"
+                v-for="count in numOfBottomMicrophone"
+                :key="count"
+            ></div>
+        </div>
+
+        <div class="left-side-detail">
+            <div class="mute">
+                <div class="switcher"></div>
+            </div>
+
+            <div class="volumn">
+                <div class="volumn-item"></div>
+                <div class="volumn-item"></div>
+            </div>
+        </div>
+
+        <div class="right-side-power"></div>
+
     </div>
     <div class="control-unit-wrap">
         <control-unit
@@ -80,13 +125,20 @@ export default {
               '/phone/calendar',
               '/phone/poem',
               '/phone/unsapp/welcome',
+              '/phone/settings'
           ],
           rotateData: {
               x: 1,
               y: 1,
               z: 0,
               degree: 45
-          }
+          },
+          // back of the phone
+          backNum: 80,
+          // basic thick of side view
+          basicSides: 20,
+          // num of bottom microphone
+          numOfBottomMicrophone: 8
       }
   },
   methods: {
@@ -148,7 +200,8 @@ export default {
       },
       onMousemove: _throttle(function(e) {
           const {clientX} = e;
-          this.rotateData.degree = clientX;
+          this.rotateData.degree = (clientX % 360);
+          // this.rotateData.degree = clientX - clientX + 45;
       }, 1)
   },
   computed: {
@@ -174,6 +227,11 @@ export default {
           return {
               transform: `rotate3d(${x}, ${y}, ${z}, ${degree}deg)`
           }
+      },
+      isSideViewShown() {
+          const {degree} = this.rotateData;
+          return degree % 90 === 0
+              && ((degree / 90) % 2) === 1;
       }
   },
   watch: {
@@ -195,9 +253,13 @@ div.phone {
     align-items: flex-start;
     color: white;
 
-    --main-color: #000;
-    --phone-x: 350px;
-    --phone-y: 600px;
+    --main-color: #111;
+    --middle-color: #333;
+    --color-black: #000;
+    --phone-width: 350px;
+    --phone-height: 600px;
+    --phone-x: calc(var(--phone-width) - var(--border-radius-front));
+    --phone-y: calc(var(--phone-height) - var(--border-radius-front));
     --phone-z: 20px;
     --border-width: 5px;
     --border-radius-front: 30px;
@@ -291,8 +353,8 @@ div.phone {
         }
 
         .phone-piece {
-            --main-color: red;
-            background: var(--main-color);
+            // --main-color: red;
+            background: var(--middle-color);
             // border: 5px solid black;
         }
 
@@ -304,7 +366,7 @@ div.phone {
             transform: rotateY(90deg);
             transform-origin: top left;
 
-            background: blue;
+            // background: blue;
         }
 
         .right-side {
@@ -315,7 +377,7 @@ div.phone {
             transform: rotateY(-90deg);
             transform-origin: top right;
 
-            background: green;
+            // background: green;
         }
 
         .top-side {
@@ -326,7 +388,7 @@ div.phone {
             transform: rotateX(-90deg);
             transform-origin: top center;
 
-            background: pink;
+            // background: pink;
         }
 
         .bottom-side {
@@ -337,17 +399,21 @@ div.phone {
             transform: rotateX(90deg);
             transform-origin: bottom center;
 
-            background: orange;
+            // background: orange;
         }
 
         .back {
             position: absolute;
-            width: var(--phone-x);
-            height: var(--phone-y);
+            width: var(--phone-width);
+            height: var(--phone-height);
             transform: translateZ(-20px);
             border-radius: var(--border-radius-front);
 
-            background: purple;
+            background: var(--middle-color);
+        }
+
+        .last-back {
+            background: var(--main-color);
         }
     }
     .powerOffAnimation {
@@ -358,4 +424,136 @@ div.phone {
         margin-left: 5%;
     }
 }
+
+.back-camera-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: nowrap;
+
+    --camera-height: 45px;
+
+    position: absolute;
+    top: 25px;
+    right: 10px;
+    width: 120px;
+    height: var(--camera-height);
+    border-radius: calc(var(--camera-height) / 2);
+    transform: translateZ(-20px);
+}
+
+.camera-container {
+    --camera-height: 45px;
+
+    width: 80px;
+    height: var(--camera-height);
+    border-radius: calc(var(--camera-height) / 2);
+    background: var(--color-black);
+    padding: 5px;
+    box-shadow: 0 0 3px #444;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .camera {
+        --camera-radius: 15px;
+        width: var(--camera-radius);
+        height: var(--camera-radius);
+        border-radius: var(--camera-radius);
+        background: #203258b0;
+        box-shadow: 0 0 3px #999;
+    }
+}
+
+.flash {
+    --flash-radius: 15px;
+    background: #fff;
+    width: var(--flash-radius);
+    height: var(--flash-radius);
+    border-radius: var(--flash-radius);
+    margin-right: 20px;
+    box-shadow: 0 0 3px #999;
+}
+
+.mics-wrap {
+    --mics-radius: 10px;
+    position: absolute;
+    bottom: calc(-1 * var(--border-width));
+    transform: rotateX(91deg) translateY(calc(-1 * var(--phone-z) / 4));
+    transform-origin: bottom center;
+    display: flex;
+    flex-wrap: nowrap;
+
+    .mics {
+        width: var(--mics-radius);
+        height: var(--mics-radius);
+        border-radius: var(--mics-radius);
+        background: var(--color-black);
+        margin-right: 2px;
+        box-shadow: 0 0 3px #444;
+    }
+}
+
+.left-mics {
+    left: 45px;
+}
+
+.right-mics {
+    right: 45px;
+}
+
+.left-side-detail {
+    position: absolute;
+    left: calc(-1 * var(--border-width));
+    top: 60px;
+    transform: rotateY(91deg) translateX(calc(var(--phone-z) / 4));
+    transform-origin: top left;
+}
+
+.mute {
+    width: 10px;
+    height: 20px;
+    background: #ff5500;
+    display: flex;
+    justify-content: flex-end;
+    border-radius: 2px;
+
+    .switcher {
+        width: 50%;
+        height: 100%;
+        background: var(--color-black);
+        border-radius: 2px;
+    }
+}
+
+.volumn {
+    margin-top: 20px;
+
+    .volumn-item {
+        width: 10px;
+        height: 40px;
+        background: var(--color-black);
+        box-shadow: 0 0 3px #444;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 5px;
+    }
+}
+
+.right-side-power {
+    position: absolute;
+    width: 10px;
+    height: 40px;
+    right: calc(-1 * var(--border-width));
+    top: 100px;
+    transform: rotateY(-90deg) translateX(calc(-1 * var(--phone-z) / 4));
+    transform-origin: top right;
+    background: var(--color-black);
+    box-shadow: 0 0 3px #444;
+    border-radius: 5px;
+}
+
 </style>
