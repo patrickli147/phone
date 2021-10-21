@@ -1,5 +1,9 @@
 <template>
-  <div class="phone" @mousemove="onMousemove">
+  <div
+    class="phone"
+    @mousemove="onMousemove"
+    @mouseleave="onMouseleave"
+  >
     <div
         class="phone-wrap"
         :style="rotateStyle"
@@ -79,10 +83,11 @@
         <div class="right-side-power"></div>
 
     </div>
-    <div class="control-unit-wrap">
+    <div class="control-unit-wrap" >
         <control-unit
             @showPowerOffModal="handleShowPowerOffModal"
             @showPowerOnAnimation="handleShowPowerOnAnimation"
+            @addclick="onAddClick"
         ></control-unit>
     </div>
   </div>
@@ -144,7 +149,9 @@ export default {
           // basic thick of side view
           basicSides: 20,
           // num of bottom microphone
-          numOfBottomMicrophone: 8
+          numOfBottomMicrophone: 8,
+          // control rotate
+          isRotateStarted: false
       }
   },
   methods: {
@@ -205,14 +212,44 @@ export default {
           }
       },
       onMousemove: _throttle(function(e) {
+          if (!this.isRotateStarted) {
+              return;
+          }
           const {clientX, clientY} = e;
           const {lastX, lastY, rotateX, rotateY} = this.rotateData;
-          this.rotateData.rotateY = ((rotateY + clientX - lastX) % 360);
-          this.rotateData.rotateX = ((rotateX + clientY - lastY) % 360);
+          if (lastX !== 0 || lastY !== 0) {
+              this.rotateData.rotateY = ((rotateY + clientX - lastX) % 360);
+              this.rotateData.rotateX = ((rotateX + clientY - lastY) % 360);
+          }
           this.rotateData.lastX = clientX;
           this.rotateData.lastY = clientY;
           // this.rotateData.degree = clientX - clientX + 45;
-      }, 1)
+      }, 1),
+      onMouseleave() {
+          this.initRotate();
+      },
+      initRotate() {
+          this.rotateData = {
+              x: 1,
+              y: 1,
+              z: 0,
+              degree: 45,
+              rotateX: 0,
+              rotateY: 0,
+              lastX: 0,
+              lastY: 0
+          };
+      },
+      onAddClick() {
+          const {isRotateStarted} = this;
+          if (isRotateStarted) {
+              this.initRotate();
+              this.isRotateStarted = false;
+          }
+          else {
+              this.isRotateStarted = true;
+          }
+      }
   },
   computed: {
       ...mapGetters([
@@ -293,6 +330,7 @@ div.phone {
         background-color: #111;
         position: relative;
         transform-style: preserve-3d;
+        transition: all .3s ease;
 
         box-shadow: 0 0 5px #fff;
 

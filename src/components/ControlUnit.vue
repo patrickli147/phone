@@ -10,8 +10,9 @@
           <Button icon="md-power"></Button>
         </div>
 
-        <Button icon="md-add"></Button>
-        <Button icon="md-remove"></Button>
+        <Tooltip :content="rotateHinter" placement="right">
+            <Button :icon="rotateIcon" @click="onAddClick"></Button>
+        </Tooltip>
     </ButtonGroup>
   </div>
 </template>
@@ -36,7 +37,9 @@ export default {
           //longpress interval
           longPressInterval: null,
           //true: is pressing
-          isPressing: false
+          isPressing: false,
+          // rotate controller
+          isRotating: false
       }
   },
   methods: {
@@ -117,7 +120,11 @@ export default {
           setPoweroffState: 'POWER_OFF_STATE',
           setIsUnlockRequested: 'SET_IS_UNLOCK_REQUESTED',
           setIsBlackScreen:'SET_IS_BLACK_SCREEN'
-      })
+      }),
+      onAddClick() {
+          this.isRotating = !this.isRotating;
+          this.$emit("addclick");
+      }
   },
   computed: {
       ...mapGetters([
@@ -125,7 +132,17 @@ export default {
         'isLocked',
         'isUnlockRequested',
         'isBlackScreen'
-      ])
+      ]),
+      rotateHinter() {
+          return this.isRotating
+              ? 'Click to Stop'
+              : 'Click to Rotate';
+      },
+      rotateIcon() {
+          return this.isRotating
+              ? 'ios-bulb-outline'
+              : 'ios-bulb';
+      }
   }
 }
 </script>
