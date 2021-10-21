@@ -40,14 +40,14 @@ export default {
       try {
         //读取pictures
         let picturesFromLocalStorage = JSON.parse(window.localStorage.getItem("pictures"));
-        
+
         if (!Array.isArray(picturesFromLocalStorage)) {
           picturesFromLocalStorage = [];
         }
         this.updatePictures(picturesFromLocalStorage);
       } catch(e) {
         console.log(e);
-      }       
+      }
     },
     // write date to localstorage
     writeToLocalStorage() {
@@ -70,6 +70,10 @@ export default {
 </script>
 
 <style>
+:root {
+  --color-gray: rgba(11, 6, 22, 0.7);
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -78,9 +82,9 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 
-  
+
   user-select: none;
   min-width: 420px;
-  
+
 }
 </style>

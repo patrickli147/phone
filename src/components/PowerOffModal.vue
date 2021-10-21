@@ -2,7 +2,7 @@
   <div class="power-off-modal">
       <div class="power-off-slider">
           <div class="cover" :style="`width:${coverWidth}px`">
-              
+
           </div>
           <div class="power"
             @touchstart="handleTouchstart"
@@ -45,9 +45,9 @@ export default {
       return {
           //the width of div.cover
           coverWidth:0,
-          //start x 
+          //start x
           startX: 0,
-          //true when mouse down started 
+          //true when mouse down started
           isStarted: false,
           //offset of power button
           offset: 0,
@@ -138,7 +138,7 @@ export default {
               //获取目标页面
               let destination = pageStack.pop();
               this.updatePageStack(pageStack);
-              this.$router.push(destination);   
+              this.$router.push(destination);
           }
       },
       //poweroffConfirmed
@@ -165,7 +165,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 div.power-off-modal {
-    $out-bg:rgb(214, 207, 207);
+    $out-bg:rgb(11, 6, 22);
     $out-opacity:0.5;
     width: 100%;
     height: 100%;
@@ -186,7 +186,7 @@ div.power-off-modal {
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      
+
       .cover {
           height: 100%;
           width: 0%;
@@ -196,15 +196,15 @@ div.power-off-modal {
           position: absolute;
           left: 0;
           top: 0;
-      }  
+      }
       .toast {
           text-align: center;
           padding-left: 30%;
-      } 
+      }
   }
 
   div.power-off-cancel {
-      
+
   }
 }
 </style>
