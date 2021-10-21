@@ -415,6 +415,7 @@ div.phone {
         .phone-piece {
             // --main-color: red;
             background: var(--middle-color);
+            z-index: -1;
             // border: 5px solid black;
         }
 
@@ -501,6 +502,7 @@ div.phone {
     height: var(--camera-height);
     border-radius: calc(var(--camera-height) / 2);
     transform: translateZ(-20px);
+    z-index: -1;
 }
 
 .camera-container {
