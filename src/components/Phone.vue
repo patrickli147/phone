@@ -279,7 +279,7 @@ export default {
       isSideViewShown() {
           const {rotateX, rotateY} = this.rotateData;
           return (rotateX % 90 === 0 || rotateY % 90 === 0)
-              && (((rotateX / 90) % 2) === 1 || ((rotateY / 90) % 2) === 1);
+              && (Math.abs(((rotateX / 90) % 2)) === 1 || Math.abs(((rotateY / 90) % 2)) === 1);
       },
       hideGapStyle() {
           const {rotateX, rotateY} = this.rotateData;
