@@ -27,11 +27,10 @@
         </div>
 
         <!-- used for side view -->
-        <div v-show="isSideViewShown" class="phone-piece left-side"></div>
-        <div v-show="isSideViewShown" class="phone-piece right-side"></div>
-        <div v-show="isSideViewShown" class="phone-piece top-side"></div>
-        <div v-show="isSideViewShown" class="phone-piece bottom-side"></div>
-
+        <div v-show="isSideViewShown" :style="hideGapStyle" class="phone-piece left-side"></div>
+        <div v-show="isSideViewShown" :style="hideGapStyle" class="phone-piece right-side"></div>
+        <div v-show="isSideViewShown" :style="hideGapStyle" class="phone-piece top-side"></div>
+        <div v-show="isSideViewShown" :style="hideGapStyle" class="phone-piece bottom-side"></div>
         <div
             :class="['phone-piece', 'back', {'last-back': count === backNum}]"
             v-for="count in backNum"
@@ -134,7 +133,11 @@ export default {
               x: 1,
               y: 1,
               z: 0,
-              degree: 45
+              degree: 45,
+              rotateX: 0,
+              rotateY: 0,
+              lastX: 0,
+              lastY: 0
           },
           // back of the phone
           backNum: 80,
@@ -202,8 +205,12 @@ export default {
           }
       },
       onMousemove: _throttle(function(e) {
-          const {clientX} = e;
-          this.rotateData.degree = (clientX % 360);
+          const {clientX, clientY} = e;
+          const {lastX, lastY, rotateX, rotateY} = this.rotateData;
+          this.rotateData.rotateY = ((rotateY + clientX - lastX) % 360);
+          this.rotateData.rotateX = ((rotateX + clientY - lastY) % 360);
+          this.rotateData.lastX = clientX;
+          this.rotateData.lastY = clientY;
           // this.rotateData.degree = clientX - clientX + 45;
       }, 1)
   },
@@ -226,15 +233,21 @@ export default {
           return this.needAppTransitions.includes(path);
       },
       rotateStyle() {
-          const {x, y, z, degree} = this.rotateData;
+          const {rotateX, rotateY} = this.rotateData;
           return {
-              transform: `rotate3d(${x}, ${y}, ${z}, ${degree}deg)`
+              transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
           }
       },
       isSideViewShown() {
-          const {degree} = this.rotateData;
-          return degree % 90 === 0
-              && ((degree / 90) % 2) === 1;
+          const {rotateX, rotateY} = this.rotateData;
+          return (rotateX % 90 === 0 || rotateY % 90 === 0)
+              && (((rotateX / 90) % 2) === 1 || ((rotateY / 90) % 2) === 1);
+      },
+      hideGapStyle() {
+          const {rotateX, rotateY} = this.rotateData;
+          return this.isSideViewShown && (Math.abs(rotateX) <= 2 || Math.abs(rotateY) <= 2)
+              ? {'--phone-x': 'var(--phone-width)', '--phone-y': 'var(--phone-height)'}
+              : '';
       }
   },
   watch: {
@@ -263,6 +276,8 @@ div.phone {
     --phone-height: 600px;
     --phone-x: calc(var(--phone-width) - var(--border-radius-front));
     --phone-y: calc(var(--phone-height) - var(--border-radius-front));
+    // --phone-x: var(--phone-width);
+    // --phone-y: var(--phone-height);
     --phone-z: 20px;
     --border-width: 5px;
     --border-radius-front: 30px;
