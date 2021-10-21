@@ -40,9 +40,10 @@
             v-for="count in backNum"
             :key="count"
             :style="`transform: translateZ(-${count/ (backNum / basicSides)}px)`"
+            v-show="isRotateStarted"
         ></div>
 
-        <div class="back-camera-wrap">
+        <div class="back-camera-wrap" v-show="isRotateStarted">
             <div class="flash"></div>
             <div class="camera-container">
                 <div class="camera"></div>
@@ -50,7 +51,7 @@
             </div>
         </div>
 
-        <div class="mics-wrap left-mics">
+        <div class="mics-wrap left-mics" v-show="isRotateStarted">
             <div
                 class="mics"
                 v-for="count in numOfBottomMicrophone"
@@ -58,10 +59,10 @@
             ></div>
         </div>
 
-        <div class="mics-wrap charger">
+        <div class="mics-wrap charger" v-show="isRotateStarted">
         </div>
 
-        <div class="mics-wrap right-mics">
+        <div class="mics-wrap right-mics" v-show="isRotateStarted">
             <div
                 class="mics"
                 v-for="count in numOfBottomMicrophone"
@@ -69,7 +70,7 @@
             ></div>
         </div>
 
-        <div class="left-side-detail">
+        <div class="left-side-detail" v-show="isRotateStarted">
             <div class="mute">
                 <div class="switcher"></div>
             </div>
@@ -80,7 +81,7 @@
             </div>
         </div>
 
-        <div class="right-side-power"></div>
+        <div class="right-side-power" v-show="isRotateStarted"></div>
 
     </div>
     <div class="control-unit-wrap" >
