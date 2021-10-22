@@ -73,10 +73,10 @@ export default {
             const deltaY = e.clientY - this.startY;
 
             // minus delta to be a click
-            const MINUS_CLICK_DELTA = 2;
+            const MINUS_CLICK_DELTA = 1;
 
-            if (this.isClick && (Math.abs(deltaX > MINUS_CLICK_DELTA)
-                || Math.abs(deltaY > MINUS_CLICK_DELTA))) {
+            if (this.isClick && (Math.abs(deltaX) > MINUS_CLICK_DELTA
+                || Math.abs(deltaY) > MINUS_CLICK_DELTA)) {
                 this.isClick = false;
             }
 
