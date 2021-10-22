@@ -50,9 +50,17 @@
 
       <!-- 底部应用 开始 -->
       <div class="bottom-apps">
-        <div class="bottom-app-item" v-for="(item, index) in bottomApps" :key="index">
-          <img src="../assets/apple.png" alt="...">
-        </div>
+        <drop-zone
+          :rows="1"
+          :columnGap="40"
+          :itemWidth="42"
+          :itemHeight="42"
+          :isDragOutAllowed="false"
+        >
+          <div class="bottom-app-item" v-for="(item, index) in bottomApps" :key="index" @click="openApp(item.path)">
+            <img :src="item.icon" alt="...">
+          </div>
+        </drop-zone>
       </div>
       <!-- 底部应用 结束 -->
     </div>
@@ -151,21 +159,21 @@ export default {
         ],
         [
           {
-            name: '测试翻页用',
+            name: '测试',
             path: '/phone/calculator',
             icon: calculatorIcon
           }
         ],
         [
           {
-            name: '测试翻页用',
+            name: '测试',
             path: '/phone/calendar',
             icon: calendarIcon
           }
         ],
         [
           {
-            name: '测试翻页用',
+            name: '测试',
             path: '/phone/poem',
             icon: poemgameIcon
           }
@@ -173,18 +181,26 @@ export default {
       ],
       //bottom apps
       bottomApps:[
-        {
-          name: '电话'
-        },
-        {
-          name: '浏览器'
-        },
-        {
-          name: '信息'
-        },
-        {
-          name: '设置'
-        }
+          {
+            name: '相机',
+            path:'/phone/camera',
+            icon: cameraIcon
+          },
+          {
+            name: '日历',
+            path: '/phone/calendar',
+            icon: calendarIcon
+          },
+          {
+            name: '计算器',
+            path: '/phone/calculator',
+            icon: calculatorIcon
+          },
+          {
+            name: '游戏',
+            path: '/phone/poem',
+            icon: poemgameIcon
+          }
       ],
       // is apps shaking
       isAppsShaking: false,
@@ -288,7 +304,10 @@ export default {
       display: flex;
       justify-content: center;
       .bottom-app-item {
-        width: 25%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // width: 25%;
 
         img {
           width: 42px;
