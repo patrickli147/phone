@@ -39,6 +39,12 @@ export default {
             type: Number,
             default: 50,
             require: false
+        },
+        // true: allowed to drag out of the 'dropzone'
+        isDragOutAllowed: {
+            type: Boolean,
+            default: true,
+            require: false
         }
     },
     data() {
@@ -161,7 +167,9 @@ export default {
                 gridTemplateColumns: `repeat(${this.columns}, ${this.itemWidth}px)`,
                 gridTemplateRows: `repeat(${this.rows}, ${this.itemHeight}px)`,
                 columnGap: `${this.columnGap}px`,
-                rowGap: `${this.rowGap}px`
+                rowGap: `${this.rowGap}px`,
+                overflow: this.isDragOutAllowed
+                    ? 'initial' : 'hidden'
             }
         }
     }
