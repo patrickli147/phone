@@ -83,6 +83,9 @@ export default {
             this.setOffset(deltaX, deltaY);
         }, 1),
         onMouseup() {
+            if (!this.isDragging) {
+                return;
+            }
             this.isDragging = false;
             this.isDragStarted = false;
 
