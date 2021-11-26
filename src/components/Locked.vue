@@ -220,7 +220,7 @@ export default {
           return this.date.getDate();
       },
       weekday() {
-          return this.weekdayData[this.date.getDay()];
+          return this.weekdayData[this.date.getDay() - 1];
       },
       numOfInput() {
           return this.pincodeInput.length;
